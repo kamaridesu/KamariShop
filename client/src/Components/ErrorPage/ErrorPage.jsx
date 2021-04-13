@@ -1,5 +1,5 @@
 import React from "react";
 
-export const NoMatch = () => {
+export const ErrorPage = () => {
   return <div>404</div>;
 };

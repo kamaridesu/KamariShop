@@ -1,18 +1,18 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Home } from "../Components/Home/Home";
-import { Navigation } from "../Components/Navigation/Navigation";
-import { NoMatch } from "../Components/Nomatch/NoMatch";
+import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
+import { Admin } from "../Components/Admin/Admin";
+import { PublicRoute } from "./PublicRoute";
+import { AdminRoute } from "./AdminRoute";
 
 export const Router = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <>
-          <Navigation />
-          <Route exact path="/" component={Home} />
-        </>
-        <Route component={NoMatch} />
+        <PublicRoute exact path="/" component={Home} />
+        <AdminRoute exact path="/admin" component={Admin} roles={["admin"]} />
+        <Route component={ErrorPage} />
       </Switch>
     </BrowserRouter>
   );
