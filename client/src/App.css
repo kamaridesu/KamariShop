@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body::-webkit-scrollbar {
+  width: 0.15rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #000000;
+}
+
+.App {
+  width: 100%;
+  display: grid;
+  grid-template-rows: 8vh 1fr;
+  min-height: 100vh;
+}

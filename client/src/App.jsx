@@ -1,27 +1,15 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { Router } from "./Routes/Router";
 import "./App.css";
+import { AuthContext } from "./Context/AuthContext";
 
 function App() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await (
-        await fetch("/api/users", {
-          method: "GET",
-        })
-      ).json();
-      setUsers(res);
-    };
-    fetchData();
-  }, []);
-
   return (
-    <div>
-      {users.map((user) => {
-        return <li>{user.role}</li>;
-      })}
-    </div>
+    <AuthContext>
+      <div className="App">
+        <Router />
+      </div>
+    </AuthContext>
   );
 }
 
