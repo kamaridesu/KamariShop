@@ -1,4 +1,5 @@
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
+import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
 
 export const ErrorHandler = ({ children }) => {
   const location = useLocation();
@@ -7,7 +8,7 @@ export const ErrorHandler = ({ children }) => {
   console.log("errorhandler", location);
   switch (errorCode) {
     case 403:
-      return null;
+      return <ErrorPage />;
     case 404:
       return null;
     //   return <Page404 />;

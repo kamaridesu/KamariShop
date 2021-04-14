@@ -23,6 +23,7 @@ const useQuery = (url, method, data) => {
 
     fetch(url, options)
       .then((data) => {
+        console.log("history", history);
         if (data.status > 400) {
           history.replace(history.location.pathname, {
             errorStatusCode: data.status,

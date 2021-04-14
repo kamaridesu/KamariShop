@@ -12,9 +12,9 @@ export const AuthContextProvider = ({ children }) => {
     isLoggedIn: false,
     loading: true,
   });
-
+  console.log("authcontext", user);
   useEffect(() => {
-    console.log("authcontext", user);
+    console.log("authuse", user);
     setAuth({ user: user, isLoggedIn: !!user, loading: loading });
   }, [user, loading]);
 

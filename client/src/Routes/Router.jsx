@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { Home } from "../Components/Home/Home";
 import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
 import { Admin } from "../Components/Admin/Admin";
@@ -9,19 +9,17 @@ import { ErrorHandler } from "../Errors/ErrorHandler";
 
 export const Router = () => {
   return (
-    <BrowserRouter>
-      <ErrorHandler>
-        <Switch>
-          <PublicRoute exact path="/" component={Home} />
-          <AdminRoute
-            exact
-            path="/products"
-            component={Admin}
-            roles={["admin"]}
-          />
-          <Route component={ErrorPage} />
-        </Switch>
-      </ErrorHandler>
-    </BrowserRouter>
+    <ErrorHandler>
+      <Switch>
+        <PublicRoute exact path="/" component={Home} />
+        <AdminRoute
+          exact
+          path="/products"
+          component={Admin}
+          roles={["admin"]}
+        />
+        <Route component={ErrorPage} />
+      </Switch>
+    </ErrorHandler>
   );
 };
