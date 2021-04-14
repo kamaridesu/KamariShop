@@ -1,24 +1,28 @@
-import { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { AuthContext } from "../Context/AuthContext";
+import { useAuth } from "../Context/AuthContextProvider";
+import { withNavigation } from "../Components/Navigation/withNavigation";
 
 export const AdminRoute = ({ component: Component, roles, ...rest }) => {
-  const { auth } = useContext(AuthContext);
-
+  const { auth } = useAuth();
+  if (auth.loading) {
+    return null;
+  }
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (auth.isLogged) {
+        if (!auth.isLoggedIn) {
           return <Redirect to={{ pathname: "/" }} />;
         }
 
         if (roles && roles.indexOf(auth.user.role) === -1) {
           return <Redirect to={{ pathname: "/" }} />;
         }
-
+        console.log("admin route");
         return <Component {...props} />;
       }}
     />
   );
 };
+
+export default (props) => withNavigation(AdminRoute, props);

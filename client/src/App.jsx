@@ -1,15 +1,15 @@
 import React from "react";
 import { Router } from "./Routes/Router";
 import "./App.css";
-import { AuthContext } from "./Context/AuthContext";
+import { AuthContextProvider } from "./Context/AuthContextProvider";
 
 function App() {
   return (
-    <AuthContext>
+    <AuthContextProvider>
       <div className="App">
         <Router />
       </div>
-    </AuthContext>
+    </AuthContextProvider>
   );
 }
 

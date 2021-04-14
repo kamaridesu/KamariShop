@@ -1,12 +1,6 @@
-import { Navigation } from "../Components/Navigation/Navigation";
 import { Route } from "react-router-dom";
+import { withNavigation } from "../Components/Navigation/withNavigation";
 
-export const PublicRoute = ({ component: Component, ...rest }) => {
-  const component = (props) => (
-    <>
-      <Navigation />
-      <Component {...props} />
-    </>
-  );
-  return <Route {...rest} component={component} />;
+export default (props) => {
+  return withNavigation(Route, props);
 };
