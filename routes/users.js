@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const { sql } = require("../configDB");
 
 router.get("/userstate", auth, (req, res) => {
-  if (req.user === null) return res.json({ user: null });
+  if (req.user === null) return res.json({});
 
   return res.json({ ...req.user });
 });

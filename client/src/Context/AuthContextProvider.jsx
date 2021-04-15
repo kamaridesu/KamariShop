@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import useQuery from "../Hooks/useQuery";
-import { getUserState } from "../Services/actions";
 
 export const AuthStateContext = createContext();
 
@@ -12,10 +11,15 @@ export const AuthContextProvider = ({ children }) => {
     isLoggedIn: false,
     loading: true,
   });
-  console.log("authcontext", user);
+
   useEffect(() => {
-    console.log("authuse", user);
-    setAuth({ user: user, isLoggedIn: !!user, loading: loading });
+    if (!loading) {
+      setAuth({
+        user: user,
+        isLoggedIn: !!user,
+        loading: loading,
+      });
+    }
   }, [user, loading]);
 
   return (

@@ -1,9 +1,12 @@
 import { Route, Redirect } from "react-router-dom";
 import { useAuth } from "../Context/AuthContextProvider";
 import { withNavigation } from "../Components/Navigation/withNavigation";
+import { useHistory } from "react-router";
 
 export const AdminRoute = ({ component: Component, roles, ...rest }) => {
   const { auth } = useAuth();
+  const history = useHistory();
+  console.log("i");
   if (auth.loading) {
     return null;
   }
@@ -11,14 +14,18 @@ export const AdminRoute = ({ component: Component, roles, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
+        console.log(auth.isLoggedIn);
         if (!auth.isLoggedIn) {
-          return <Redirect to={{ pathname: "/" }} />;
+          return history.replace(history.location.pathname, {
+            errorStatusCode: 401,
+          });
         }
 
         if (roles && roles.indexOf(auth.user.role) === -1) {
-          return <Redirect to={{ pathname: "/" }} />;
+          return history.replace(history.location.pathname, {
+            errorStatusCode: 403,
+          });
         }
-        console.log("admin route");
         return <Component {...props} />;
       }}
     />

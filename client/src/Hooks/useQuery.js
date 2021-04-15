@@ -23,7 +23,6 @@ const useQuery = (url, method, data) => {
 
     fetch(url, options)
       .then((data) => {
-        console.log("history", history);
         if (data.status > 400) {
           history.replace(history.location.pathname, {
             errorStatusCode: data.status,
@@ -32,11 +31,12 @@ const useQuery = (url, method, data) => {
         return data.json();
       })
       .then((data) => {
-        setApiData(data);
+        setApiData(() => (Object.keys(data).length === 0 ? null : data));
         setLoading(false);
       });
-  }, [data, url, method]);
-  console.log("userquery", apiData);
+    //history added careful
+  }, [data, url, method, history]);
+
   return { data: apiData, loading };
 };
 
