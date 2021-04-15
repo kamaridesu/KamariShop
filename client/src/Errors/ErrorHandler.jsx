@@ -5,16 +5,14 @@ export const ErrorHandler = ({ children }) => {
   const location = useLocation();
 
   const errorCode = location.state && location.state["errorStatusCode"];
-  console.log("errorhandler", location);
+
   switch (errorCode) {
     case 403:
-      return <ErrorPage />;
+      return <ErrorPage errorCode={errorCode} message={"Forbidden"} />;
     case 404:
-      return null;
-    //   return <Page404 />;
+      return <ErrorPage errorCode={errorCode} message={"Not Found"} />;
     case 500:
-      return null;
-
+      return <ErrorPage value={(errorCode, "Server Error")} />;
     default:
       return children;
   }

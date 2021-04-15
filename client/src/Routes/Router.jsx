@@ -18,7 +18,9 @@ export const Router = () => {
           component={Admin}
           roles={["admin"]}
         />
-        <Route component={ErrorPage} />
+        <Route>
+          <ErrorPage errorCode={404} message={"Not Found"} />;
+        </Route>
       </Switch>
     </ErrorHandler>
   );

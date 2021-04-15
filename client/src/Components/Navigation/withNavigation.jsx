@@ -1,9 +1,9 @@
-import { Navigation } from "./Navigation";
+import { Nav } from "./Nav";
 
 export const withNavigation = (Component, props) => {
   return (
     <>
-      <Navigation />
+      <Nav />
       <Component {...props} />
     </>
   );
