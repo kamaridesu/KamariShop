@@ -7,8 +7,15 @@ export const Form = () => {
   const [state, setstate] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [data, loading, setApiOptions] = useQuery({});
 
-  const handleForm = () => {};
+  const handleForm = () => {
+    setApiOptions({
+      url: "/api/users/test",
+      method: "POST",
+      body: { email, password },
+    });
+  };
 
   return (
     <div className={styles.form}>

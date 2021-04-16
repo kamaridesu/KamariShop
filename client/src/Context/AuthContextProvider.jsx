@@ -4,7 +4,11 @@ import useQuery from "../Hooks/useQuery";
 export const AuthStateContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const { data: user, loading } = useQuery("/api/users/userstate", "GET");
+  //const { data: user, loading } = useQuery("/api/users/userstate", "GET");
+  const [data, loading, setApiOptions] = useQuery({
+    url: "/api/users/userstate",
+    method: "GET",
+  });
 
   const [auth, setAuth] = useState({
     user: null,
@@ -15,12 +19,12 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     if (!loading) {
       setAuth({
-        user: user,
-        isLoggedIn: !!user,
+        user: data,
+        isLoggedIn: !!data,
         loading: loading,
       });
     }
-  }, [user, loading]);
+  }, [data, loading]);
 
   return (
     <AuthStateContext.Provider value={{ auth, setAuth }}>

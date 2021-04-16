@@ -1,33 +1,38 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 
-const useQuery = (url, method, data) => {
+const useQuery = ({ url = null, method = null, body = null }) => {
   const history = useHistory();
+  const [apiOptions, setApiOptions] = useState({
+    url,
+    method,
+    body,
+  });
   const [apiData, setApiData] = useState();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchApi = () => {
     const options = {
-      method,
+      method: apiOptions.method,
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(apiOptions.body),
     };
 
-    if (method === "GET") {
+    if (apiOptions.method === "GET") {
       delete options.body;
     }
 
-    if (data instanceof FormData) {
-      options.body = data;
+    if (apiOptions.body instanceof FormData) {
+      options.body = apiOptions.body;
       delete options.headers;
     }
 
-    fetch(url, options)
+    fetch(apiOptions.url, options)
       .then((data) => {
-        if (data.status > 400) {
+        if (data.status > 401) {
           history.replace(history.location.pathname, {
             errorStatusCode: data.status,
           });
@@ -38,10 +43,15 @@ const useQuery = (url, method, data) => {
         setApiData(() => (Object.keys(data).length === 0 ? null : data));
         setLoading(false);
       });
-    //history added careful
-  }, [data, url, method, history]);
+  };
 
-  return { data: apiData, loading };
+  useEffect(() => {
+    if (apiOptions.url !== null) {
+      fetchApi();
+    }
+  }, [apiOptions]);
+  console.log(apiData, loading, apiOptions);
+  return [apiData, loading, setApiOptions];
 };
 
 export default useQuery;
