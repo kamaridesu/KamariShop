@@ -3,8 +3,7 @@ $breakpoint-tablet: 768px;
 .modal {
   display: flex;
   position: fixed;
-  top: 8vh;
-  //width: 100vw !important;
+  top: 8.1vh;
   height: 92vh;
   right: 0px;
   background-color: white;
@@ -13,7 +12,6 @@ $breakpoint-tablet: 768px;
 
 @media (min-width: $breakpoint-tablet) {
   .modal {
-    //width: 24em !important;
     height: auto;
     margin: 1rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);

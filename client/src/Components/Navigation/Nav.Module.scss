@@ -48,10 +48,10 @@
     grid-auto-flow: column;
     grid-gap: 6px;
 
-    div {
+    > div {
       display: flex;
 
-      svg {
+      > svg {
         height: 19px;
         width: auto;
       }
@@ -59,7 +59,7 @@
   }
 }
 
-@media (min-width: 425px) {
+@media (min-width: 768px) {
   .nav {
     padding: 0 40px;
 
@@ -72,8 +72,8 @@
     .rightSection {
       grid-gap: 10px;
 
-      div {
-        svg {
+      > div {
+        > svg {
           height: 25px;
           width: auto;
         }

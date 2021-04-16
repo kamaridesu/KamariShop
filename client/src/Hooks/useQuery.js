@@ -10,15 +10,19 @@ const useQuery = (url, method, data) => {
     const options = {
       method,
       credentials: "include",
-      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     };
 
     if (method === "GET") {
       delete options.body;
     }
 
-    if (!data instanceof FormData) {
-      options.body = JSON.stringify(data);
+    if (data instanceof FormData) {
+      options.body = data;
+      delete options.headers;
     }
 
     fetch(url, options)

@@ -6,13 +6,13 @@ export const Icon = ({ Component, children }) => {
   const [modalTriggerElement, setModalTriggerElement] = useState(null);
 
   return (
-    <div
-      onClick={(e) => {
-        setModalVisible((e) => !e);
-        setModalTriggerElement(e.target);
-      }}
-    >
-      <Component />
+    <div>
+      <Component
+        onClick={(e) => {
+          setModalVisible((e) => !e);
+          setModalTriggerElement(e.target);
+        }}
+      />
       {modalVisble && (
         <Modal
           setModalVisible={setModalVisible}

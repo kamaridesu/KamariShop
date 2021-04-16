@@ -1,4 +1,4 @@
-import { Route, Redirect } from "react-router-dom";
+import { Route } from "react-router-dom";
 import { useAuth } from "../Context/AuthContextProvider";
 import { withNavigation } from "../Components/Navigation/withNavigation";
 import { useHistory } from "react-router";
