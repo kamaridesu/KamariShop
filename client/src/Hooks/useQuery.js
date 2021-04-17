@@ -9,53 +9,60 @@ const useQuery = ({ url = null, method = null, body = null }) => {
     body,
   });
   const [apiData, setApiData] = useState();
-  const [loading, setLoading] = useState(true);
-
-  const fetchApi = () => {
-    const options = {
-      method: apiOptions.method,
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(apiOptions.body),
-    };
-
-    if (apiOptions.method === "GET") {
-      delete options.body;
-    }
-
-    if (apiOptions.body instanceof FormData) {
-      options.body = apiOptions.body;
-      delete options.headers;
-    }
-
-    fetch(apiOptions.url, options)
-      .then((data) => {
-        setApiData({ status: data.status });
-        if (data.status > 401) {
-          history.replace(history.location.pathname, {
-            errorStatusCode: data.status,
-          });
-        }
-        return data.json();
-      })
-      .then((data) => {
-        setApiData((prev) =>
-          Object.keys(data).length === 0 ? null : { ...prev, ...data }
-        );
-        setLoading(false);
-      });
-  };
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const fetchApi = async () => {
+      const options = getOptions(apiOptions.method, apiOptions.body);
+
+      const response = await fetch(apiOptions.url, options);
+      if (response.status > 401) {
+        return void history.replace(history.location.pathname, {
+          errorStatusCode: response.status,
+        });
+      }
+
+      const data = await response.json();
+      if (Object.keys(data).length === 0) {
+        setApiData({ data: null, status: response.status });
+      } else {
+        setApiData({ data: data, status: response.status });
+      }
+    };
+
     if (apiOptions.url !== null) {
-      fetchApi();
       setLoading(true);
+      fetchApi().finally(() => {
+        setLoading(false);
+      });
     }
   }, [apiOptions]);
+
   console.log(apiOptions);
-  return [apiData, loading, setApiOptions];
+  return {
+    loading,
+    data: apiData.data,
+    status: apiData.status,
+    setApiOptions,
+  };
 };
+
+function getOptions(method, body) {
+  const options = {
+    method: method,
+    credentials: "include",
+    body: method !== "GET" ? JSON.stringify(body) : undefined,
+  };
+
+  if (body instanceof FormData) {
+    options.body = body;
+  } else {
+    options.headers = {
+      "Content-Type": "application/json",
+    };
+  }
+
+  return options;
+}
 
 export default useQuery;
