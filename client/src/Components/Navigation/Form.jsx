@@ -8,7 +8,7 @@ export const Form = () => {
   const [state, setstate] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [data, loading, setApiOptions] = useQuery({});
+  const { data, status, loading, setApiOptions } = useQuery({});
   const [message, setMessage] = useState({ msg: "", status: null });
   const { setAuth } = useAuth();
 
@@ -29,11 +29,12 @@ export const Form = () => {
   };
 
   useEffect(() => {
+    console.log("form");
     if (loading === false) {
-      if (data.status === 200) {
+      if (status === 200) {
         setAuth({ ...data });
       }
-      setMessage({ ...data });
+      setMessage({ msg: data.msg, status: status });
       setEmail("");
       setPassword("");
     }

@@ -8,8 +8,8 @@ const useQuery = ({ url = null, method = null, body = null }) => {
     method,
     body,
   });
-  const [apiData, setApiData] = useState();
-  const [loading, setLoading] = useState(false);
+  const [apiData, setApiData] = useState({ data: null, status: null });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -38,7 +38,6 @@ const useQuery = ({ url = null, method = null, body = null }) => {
     }
   }, [apiOptions]);
 
-  console.log(apiOptions);
   return {
     loading,
     data: apiData.data,

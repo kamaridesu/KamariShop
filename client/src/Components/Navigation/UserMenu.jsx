@@ -7,9 +7,7 @@ import styles from "./UserMenu.Module.scss";
 
 export const UserMenu = ({ close }) => {
   const { auth, setAuth } = useAuth();
-  const [data, loading, setApiOptions] = useQuery({});
-
-  console.log(loading);
+  const { data, loading, setApiOptions } = useQuery({});
 
   const logOut = () => {
     setApiOptions({
@@ -19,6 +17,7 @@ export const UserMenu = ({ close }) => {
   };
 
   useEffect(() => {
+    console.log("userMenu", loading);
     if (loading === false) {
       setAuth({
         user: null,
