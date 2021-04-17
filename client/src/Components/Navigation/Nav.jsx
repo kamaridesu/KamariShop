@@ -4,10 +4,13 @@ import styles from "../Navigation/Nav.Module.scss";
 import logo from "../../Images/KamariLogo120.png";
 import { AiFillShopping, AiFillHeart } from "react-icons/ai";
 import { BsPersonFill } from "react-icons/bs";
-import { Icon } from "./Icon";
+import { IconButton } from "./IconButton";
 import { Basket } from "./Basket";
 import { Wishlist } from "./Wishlist";
-import { User } from "./User";
+import { User } from "./Userdep";
+import { useAuth } from "../../Context/AuthContextProvider";
+import { UserMenu } from "./UserMenu";
+import { Form } from "./Form";
 
 export const Nav = () => {
   return (
@@ -23,16 +26,16 @@ export const Nav = () => {
         <Link to="/women">Women</Link>
       </div>
       <div className={styles.rightSection}>
-        <Icon Component={BsPersonFill}>
-          <User />
-        </Icon>
-        <Icon Component={AiFillHeart}>
-          <Wishlist />
-        </Icon>
-        <Icon Component={AiFillShopping}>
-          <Basket />
-        </Icon>
+        <IconButton Icon={BsPersonFill} ModalContent={UserNavMenu} />
+        <IconButton Icon={AiFillHeart} ModalContent={Wishlist} />
+        <IconButton Icon={AiFillShopping} ModalContent={Basket} />
       </div>
     </nav>
   );
+};
+
+const UserNavMenu = ({ close }) => {
+  const { auth } = useAuth();
+
+  return <>{auth.isLoggedIn ? <UserMenu close={close} /> : <Form />}</>;
 };

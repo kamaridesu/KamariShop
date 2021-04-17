@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Modal } from "./Modal";
 
-export const Icon = ({ Component, children }) => {
+export const IconButton = ({ Icon, ModalContent }) => {
   const [modalVisble, setModalVisible] = useState(false);
   const [modalTriggerElement, setModalTriggerElement] = useState(null);
 
   return (
     <div>
-      <Component
+      <Icon
         onClick={(e) => {
           setModalVisible((e) => !e);
           setModalTriggerElement(e.target);
@@ -18,7 +18,7 @@ export const Icon = ({ Component, children }) => {
           setModalVisible={setModalVisible}
           modalTriggerElement={modalTriggerElement}
         >
-          {children}
+          <ModalContent close={() => setModalVisible(false)} />
         </Modal>
       )}
     </div>

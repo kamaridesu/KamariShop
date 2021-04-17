@@ -32,6 +32,7 @@ const useQuery = ({ url = null, method = null, body = null }) => {
 
     fetch(apiOptions.url, options)
       .then((data) => {
+        setApiData({ status: data.status });
         if (data.status > 401) {
           history.replace(history.location.pathname, {
             errorStatusCode: data.status,
@@ -40,7 +41,9 @@ const useQuery = ({ url = null, method = null, body = null }) => {
         return data.json();
       })
       .then((data) => {
-        setApiData(() => (Object.keys(data).length === 0 ? null : data));
+        setApiData((prev) =>
+          Object.keys(data).length === 0 ? null : { ...prev, ...data }
+        );
         setLoading(false);
       });
   };
@@ -48,9 +51,10 @@ const useQuery = ({ url = null, method = null, body = null }) => {
   useEffect(() => {
     if (apiOptions.url !== null) {
       fetchApi();
+      setLoading(true);
     }
   }, [apiOptions]);
-  console.log(apiData, loading, apiOptions);
+  console.log(apiOptions);
   return [apiData, loading, setApiOptions];
 };
 

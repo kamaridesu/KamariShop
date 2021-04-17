@@ -51,6 +51,7 @@ router.post("/login", async (req, res) => {
           email: response[0].email,
           role: response[0].role,
         },
+        isLoggedIn: true,
       },
       process.env.ACCESS_TOKEN_SECRET
     );
@@ -59,7 +60,14 @@ router.post("/login", async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
       })
-      .json(token);
+      .json({
+        user: {
+          id: response[0].id,
+          email: response[0].email,
+          role: response[0].role,
+        },
+        isLoggedIn: true,
+      });
   } catch (error) {
     return res.status(500).send();
   }
@@ -92,28 +100,31 @@ router.post("/register", async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
+    body.password = passwordHash;
+
     await sql`insert into users ${sql(body, "email", "password")}`;
 
-    return res.json({ msg: "You have been registered succesfully" });
+    return res
+      .status(200)
+      .json({ msg: "You have been registered succesfully" });
   } catch (error) {
-    //maybe make it json!
+    console.log(error);
     return res.status(500).send();
   }
 });
 
 router.get("/logout", (req, res) => {
   try {
-    return res.cookie("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
-    });
+    return res
+      .cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+      })
+      .json({});
   } catch (error) {
+    console.log(error);
     return res.status(500).send();
   }
-});
-
-router.post("/test", (req, res) => {
-  console.log(req.body);
 });
 
 module.exports = router;

@@ -6,7 +6,6 @@ import { useHistory } from "react-router";
 export const AdminRoute = ({ component: Component, roles, ...rest }) => {
   const { auth } = useAuth();
   const history = useHistory();
-  console.log("i");
   if (auth.loading) {
     return null;
   }
@@ -14,7 +13,6 @@ export const AdminRoute = ({ component: Component, roles, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        console.log(auth.isLoggedIn);
         if (!auth.isLoggedIn) {
           return history.replace(history.location.pathname, {
             errorStatusCode: 401,

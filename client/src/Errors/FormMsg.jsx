@@ -3,11 +3,12 @@ import { BsExclamationCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import styles from "./FormMsg.Module.scss";
 
-export const FormMsg = ({ message, clear, success }) => {
+export const FormMsg = ({ msg, clear }) => {
+  console.log(msg);
   return (
     <div
       className={
-        success
+        msg.status === 200
           ? `${styles.container} ${styles.success}`
           : `${styles.container} ${styles.failed}`
       }
@@ -16,7 +17,7 @@ export const FormMsg = ({ message, clear, success }) => {
         <BsExclamationCircleFill />
       </div>
       <div>
-        <span>Some message{message}</span>
+        <span>{msg.msg}</span>
       </div>
       <div onClick={clear}>
         <AiOutlineClose />
