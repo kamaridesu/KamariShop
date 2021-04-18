@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 const useQuery = ({ url = null, method = null, body = null }) => {
   const history = useHistory();
@@ -8,8 +8,8 @@ const useQuery = ({ url = null, method = null, body = null }) => {
     method,
     body,
   });
-  const [apiData, setApiData] = useState();
-  const [loading, setLoading] = useState(false);
+  const [apiData, setApiData] = useState({ data: null, status: null });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -37,8 +37,7 @@ const useQuery = ({ url = null, method = null, body = null }) => {
       });
     }
   }, [apiOptions]);
-
-  console.log(apiOptions);
+  console.log("query", loading);
   return {
     loading,
     data: apiData.data,

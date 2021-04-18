@@ -6,6 +6,7 @@ import { Products } from "../Components/Admin/Products";
 import PublicRoute from "./PublicRoute";
 import AdminRoute from "./AdminRoute";
 import { ErrorHandler } from "../Errors/ErrorHandler";
+import { ProductForm } from "../Components/Admin/ProductForm";
 
 export const Router = () => {
   return (
@@ -16,6 +17,18 @@ export const Router = () => {
           exact
           path="/products"
           component={Products}
+          roles={["admin"]}
+        />
+        <AdminRoute
+          exact
+          path="/products/productform"
+          component={ProductForm}
+          roles={["admin"]}
+        />
+        <AdminRoute
+          exact
+          path="/products/editproduct/:id"
+          component={ProductForm}
           roles={["admin"]}
         />
         <Route>

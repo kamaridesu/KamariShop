@@ -1,0 +1,207 @@
+$breakpoint-tablet: 768px;
+
+.container {
+  padding: 2rem 2rem;
+  display: grid;
+  grid-gap: 20px;
+
+  & > :nth-child(1) {
+    grid-gap: 1rem;
+    display: grid;
+    width: 300px;
+    margin: auto;
+    & > :nth-child(1) {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+
+      & label {
+        & img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 1px solid black;
+        }
+      }
+      & label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & svg {
+          width: auto;
+          height: 50px;
+          background-color: #dfe0e6;
+          border-radius: 50%;
+
+          &:hover {
+            background-color: #c4c5cc;
+          }
+        }
+      }
+    }
+
+    & > :nth-child(2) {
+      height: 250px;
+      border-radius: 10px;
+      border: 2px dashed black;
+      padding: 3px;
+      position: relative;
+
+      & img {
+        width: 100%;
+        height: 100%;
+      }
+      & label {
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+
+        & svg {
+          width: auto;
+          height: 8rem;
+        }
+      }
+
+      & button {
+        border: none;
+        position: absolute;
+        top: 3%;
+        right: 1%;
+        background: none;
+        color: #f44336;
+        outline: none;
+
+        & svg {
+          width: 25px;
+          height: auto;
+        }
+      }
+    }
+  }
+
+  & > :nth-child(2) {
+    display: grid;
+    grid-gap: 30px;
+
+    & div {
+      display: grid;
+      grid-gap: 0.5rem;
+    }
+
+    & input {
+      border: none;
+      border-bottom: 1px solid rgb(49, 49, 49);
+      background-color: rgba(49, 49, 49, 0.04);
+      display: block;
+      width: 100%;
+      padding: 5px;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-bottom: 2px solid #69d3a0;
+      }
+    }
+
+    & > :nth-child(4) {
+      > div,
+      textarea {
+        border: none;
+        border-bottom: 1px solid rgb(49, 49, 49);
+        background-color: rgba(49, 49, 49, 0.04);
+        display: block;
+        min-width: 1px;
+        padding: 5px;
+        font-size: 14px;
+        outline: none;
+        resize: none;
+        &:focus {
+          outline: none;
+          border-bottom: 2px solid #69d3a0;
+        }
+      }
+    }
+
+    & > :nth-child(5) {
+      & > :nth-child(2) {
+        display: flex;
+        justify-content: space-evenly;
+        padding: 0 5px;
+      }
+    }
+
+    & > :nth-child(6) {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      & > button {
+        //background-color: red;
+        border: 1px solid #e6e6e6;
+        background-color: white;
+        outline: none;
+        &:focus {
+          outline: none;
+        }
+        & > div {
+          border: 1px solid #b2b2b2;
+          background-color: white;
+          height: 7px;
+          width: 35px;
+          margin: 10px 15px;
+        }
+      }
+    }
+
+    & > :nth-child(7) {
+      & button {
+        padding: 15px;
+        background-color: #000;
+        border-color: #000;
+        color: white;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.genderActive {
+  border-bottom: 3px solid black;
+}
+
+.active {
+  border: 1px solid black !important;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.msg {
+  width: 95%;
+  margin: auto;
+  margin-top: 2rem;
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .container {
+    //background-color: #f44336;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    max-width: none;
+    padding: 2rem 5rem;
+    & > :nth-child(1) {
+      display: block;
+      margin: 0 auto;
+      & > :nth-child(1) {
+        margin-bottom: 20px;
+      }
+    }
+    & > :nth-child(2) {
+      //background-color: red;
+      grid-column-end: 4;
+      grid-column-start: 2;
+    }
+  }
+}

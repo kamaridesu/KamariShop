@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContextProvider";
 import useQuery from "../../Hooks/useQuery";
 import styles from "./UserMenu.Module.scss";
+import { useHistory } from "react-router-dom";
 
 export const UserMenu = ({ close }) => {
   const { auth, setAuth } = useAuth();
-  const [data, loading, setApiOptions] = useQuery({});
-
-  console.log(loading);
+  const { data, loading, setApiOptions } = useQuery({});
+  const history = useHistory();
 
   const logOut = () => {
     setApiOptions({
@@ -19,12 +19,14 @@ export const UserMenu = ({ close }) => {
   };
 
   useEffect(() => {
+    console.log("userMenu", loading);
     if (loading === false) {
       setAuth({
         user: null,
         isLoggedIn: false,
         loading: true,
       });
+      history.push("/");
     }
   }, [loading]);
 

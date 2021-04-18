@@ -5,7 +5,7 @@ export const AuthStateContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   //const { data: user, loading } = useQuery("/api/users/userstate", "GET");
-  const [data, loading, setApiOptions] = useQuery({
+  const { data, loading } = useQuery({
     url: "/api/users/userstate",
     method: "GET",
   });
