@@ -9,7 +9,6 @@ import useQuery from "../../Hooks/useQuery";
 
 export const ProductForm = () => {
   const { id } = useParams();
-  const [idProduct, setIdProduct] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -19,48 +18,32 @@ export const ProductForm = () => {
   const [color, setColor] = useState("");
   const [gender, setGender] = useState("");
   const [message, setMessage] = useState({ msg: "", status: null });
-  const { loading, data, status, setApiOptions } = useQuery({});
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      console.log("fetch");
-      setApiOptions({
-        url: `/api/products/product/${id}`,
-        method: "GET",
-      });
-
-      //   if (status !== 200) {
-      //     //setMessage({ msg: data.msg, status: status });
-      //   } else {
-      //     setIdProduct(data.id);
-      //     setName(data.name);
-      //     setPrice(data.price);
-      //     setDescription(data.description);
-      //     setQuantity(data.quantity);
-      //     setGender(data.gender);
-      //     setColor(data.color);
-
-      //     data.images.forEach((url) => {
-      //       fetch(`${url}`, { method: "get" })
-      //         .then((response) => response.blob())
-      //         .then((blob) => {
-      //           blob.url = URL.createObjectURL(blob);
-      //           setFiles((prev) => [...prev, blob]);
-      //         });
-      //     });
-      //   }
-    };
-
-    if (id) {
-      fetchProduct();
-    }
-  }, [id]);
+  const { loading, data, status, setApiOptions } = useQuery({
+    url: id ? `/api/products/product/${id}` : null,
+    method: "GET",
+  });
 
   useEffect(() => {
     if (loading === false) {
-      setMessage({ msg: data.msg, status: status });
+      setMessage({ msg: data?.msg, status: status });
     }
-  }, [loading, data]);
+    if (loading === false && id) {
+      setName(data[0].name);
+      setPrice(data[0].price);
+      setDescription(data[0].description);
+      setQuantity(data[0].quantity);
+      setGender(data[0].gender);
+      setColor(data[0].color);
+      data[0].images.forEach((url) => {
+        fetch(`${url}`, { method: "get" })
+          .then((response) => response.blob())
+          .then((blob) => {
+            blob.url = URL.createObjectURL(blob);
+            setFiles((prev) => [...prev, blob]);
+          });
+      });
+    }
+  }, [loading]);
 
   const handleImages = async (e) => {
     if (e.target.files.length > 0) {
@@ -98,13 +81,6 @@ export const ProductForm = () => {
         body: formData,
       });
     }
-
-    // if (!res.success) {
-    //   setMessage({ msg: res.msg });
-    // } else {
-    //   setMessage({ msg: res.msg, success: res.success });
-    //   setTimeout(() => setMessage(""), 3000);
-    // }
   };
 
   return (

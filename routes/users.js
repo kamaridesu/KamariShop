@@ -28,7 +28,6 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "Please enter a password." });
     }
 
-    //await sql`SELECT * FROM users WHERE email=${email}`;
     let response = await sql`select * from users WHERE email = ${body.email}`;
 
     if (!response.count) {
@@ -69,6 +68,7 @@ router.post("/login", async (req, res) => {
         isLoggedIn: true,
       });
   } catch (error) {
+    console.log(error);
     return res.status(500).send();
   }
 });

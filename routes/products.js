@@ -3,17 +3,7 @@ const router = express.Router();
 const auth = require("../middlewares/auth");
 const { sql } = require("../configDB");
 const util = require("util");
-const fs = require("fs");
 const { mkdir, rmdir, readdir, unlink } = require("../utility/utils");
-
-if (process.env.NODE_ENV === "PROD") {
-  console.log("products", fs.readdirSync("/"));
-  console.log("products", fs.readdirSync("/app"));
-  console.log("products", fs.readdirSync("./client"));
-  console.log("products", fs.readdirSync("./client/build"));
-  console.log("products", fs.readdirSync("./client/build/images"));
-  console.log("products", __dirname);
-}
 
 router.get("/all", auth, async (req, res) => {
   try {
@@ -32,7 +22,8 @@ router.get("/all", auth, async (req, res) => {
     }
 
     return res.json(response);
-  } catch (err) {
+  } catch (error) {
+    console.log(error);
     return res.status(500).send();
   }
 });
@@ -46,29 +37,30 @@ router.get("/product/:id", auth, async (req, res) => {
     const product = {
       id: req.params.id,
     };
-
+    console.log(product);
+    let response;
     try {
-      const response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image)
+      response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image)
         as images
         from product
         inner join images
         on images.productid = product.id
         WHERE id = ${product.id}
         GROUP BY product.id;`;
+      console.log(response);
     } catch (error) {
       return res.status(404).json({});
     }
 
     if (!response.count) {
-      return res.status(400).json({
-        msg: "Product with id: " + id + " does not exist",
-        success: false,
-      });
+      console.log("hey");
+      console.log(response);
+      return res.status(404).json({});
     }
-    console.log("hi");
+
     return res.json(response);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
     return res.status(500).send();
   }
 });
@@ -80,8 +72,7 @@ router.post("/create", auth, async (req, res) => {
     await createProductTransaction(req);
     return res.json({ msg: "Product created succesfully" });
   } catch (err) {
-    console.log(err);
-    console.log(__dirname);
+    console.log(error);
     return res.status(500).send();
   }
 });
