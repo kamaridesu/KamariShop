@@ -24,10 +24,11 @@ export const ProductForm = () => {
   });
 
   useEffect(() => {
-    if (loading === false) {
+    if (loading === false && data.msg) {
       setMessage({ msg: data?.msg, status: status });
+      return;
     }
-    if (loading === false && id) {
+    if (loading === false && id && data[0].id) {
       setName(data[0].name);
       setPrice(data[0].price);
       setDescription(data[0].description);

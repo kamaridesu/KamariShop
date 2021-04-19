@@ -37,7 +37,7 @@ router.get("/product/:id", auth, async (req, res) => {
     const product = {
       id: req.params.id,
     };
-    console.log(product);
+
     let response;
     try {
       response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image)
@@ -47,14 +47,11 @@ router.get("/product/:id", auth, async (req, res) => {
         on images.productid = product.id
         WHERE id = ${product.id}
         GROUP BY product.id;`;
-      console.log(response);
     } catch (error) {
       return res.status(404).json({});
     }
 
     if (!response.count) {
-      console.log("hey");
-      console.log(response);
       return res.status(404).json({});
     }
 
@@ -72,6 +69,19 @@ router.post("/create", auth, async (req, res) => {
     await createProductTransaction(req);
     return res.json({ msg: "Product created succesfully" });
   } catch (err) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+router.post("/update", auth, async (req, res) => {
+  try {
+    if (!isProductValid(req, res)) return;
+
+    await updateProductTransaction(req);
+
+    return res.json({ msg: "Product updated succesfully" });
+  } catch (error) {
     console.log(error);
     return res.status(500).send();
   }
@@ -139,6 +149,52 @@ const createProductTransaction = async (req) => {
       await sql`INSERT INTO images (productid, image) values (${
         create[0].id
       }, ${"/images/" + create[0].id + "/" + files[i].md5})`;
+    }
+  });
+};
+
+const updateProductTransaction = async (req) => {
+  const { id, name, price, description, quantity, color, gender } = req.body;
+
+  let { files } = req.files;
+
+  if (!Array.isArray(files)) {
+    files = [files];
+  }
+
+  await sql.begin(async (sql) => {
+    const update = await sql`UPDATE product set ${sql(
+      req.body,
+      "name",
+      "price",
+      "quantity",
+      "gender",
+      "color",
+      "description"
+    )} WHERE id = ${req.body.id} RETURNING *`;
+
+    await sql`DELETE FROM images WHERE productid = ${update[0].id}`;
+
+    let url;
+
+    if (process.env.NODE_ENV === "PROD") {
+      url = `/app/client/build/images/${update[0].id}`;
+    } else {
+      url = `./client/public/images/${update[0].id}`;
+    }
+
+    const currentFiles = await readdir(url);
+
+    for (const file of currentFiles) {
+      await unlink(`${url}/${file}`);
+    }
+
+    for (let i = 0; i < files.length; i++) {
+      files[i].mv = util.promisify(files[i].mv);
+      files[i].mv(`${url}/${files[i].md5}`);
+      await sql`INSERT INTO images (productid, image) values (${
+        update[0].id
+      }, ${"/images/" + update[0].id + "/" + files[i].md5})`;
     }
   });
 };

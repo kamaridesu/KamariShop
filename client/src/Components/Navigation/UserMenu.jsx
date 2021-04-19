@@ -19,7 +19,6 @@ export const UserMenu = ({ close }) => {
   };
 
   useEffect(() => {
-    console.log("userMenu", loading);
     if (loading === false) {
       setAuth({
         user: null,

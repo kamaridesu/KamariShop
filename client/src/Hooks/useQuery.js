@@ -37,7 +37,7 @@ const useQuery = ({ url = null, method = null, body = null }) => {
       });
     }
   }, [apiOptions]);
-  console.log("query", loading);
+
   return {
     loading,
     data: apiData.data,

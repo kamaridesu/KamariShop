@@ -29,7 +29,6 @@ export const Form = () => {
   };
 
   useEffect(() => {
-    console.log("form");
     if (loading === false) {
       if (status === 200) {
         setAuth({ ...data });

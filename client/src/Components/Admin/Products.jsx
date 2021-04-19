@@ -11,7 +11,7 @@ export const Products = () => {
     url: "/api/products/all",
     method: "GET",
   });
-  console.log(data);
+
   return (
     <>
       {!data ? (
