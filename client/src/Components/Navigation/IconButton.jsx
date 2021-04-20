@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "./Modal";
 
-export const IconButton = ({ Icon, ModalContent }) => {
+export const IconButton = ({ Icon, ModalContent, classname, callback }) => {
   const [modalVisble, setModalVisible] = useState(false);
   const [modalTriggerElement, setModalTriggerElement] = useState(null);
 
@@ -15,10 +15,14 @@ export const IconButton = ({ Icon, ModalContent }) => {
       />
       {modalVisble && (
         <Modal
+          classname={classname}
           setModalVisible={setModalVisible}
           modalTriggerElement={modalTriggerElement}
         >
-          <ModalContent close={() => setModalVisible(false)} />
+          <ModalContent
+            close={() => setModalVisible(false)}
+            callback={callback}
+          />
         </Modal>
       )}
     </div>

@@ -15,13 +15,14 @@ router.get("/all", auth, async (req, res) => {
         from product 
         inner join images 
         on images.productid = product.id
+        where isdeleted = false
         GROUP BY product.id;`;
 
     if (!response.count) {
       return res.status(400).json([]);
     }
 
-    return res.json(response);
+    return res.json({ response });
   } catch (error) {
     console.log(error);
     return res.status(500).send();
@@ -66,8 +67,9 @@ router.post("/create", auth, async (req, res) => {
   try {
     if (!isProductValid(req, res)) return;
 
-    await createProductTransaction(req);
-    return res.json({ msg: "Product created succesfully" });
+    const id = await createProductTransaction(req);
+
+    return res.json({ msg: "Product created succesfully", id });
   } catch (err) {
     console.log(error);
     return res.status(500).send();
@@ -80,7 +82,29 @@ router.post("/update", auth, async (req, res) => {
 
     await updateProductTransaction(req);
 
-    return res.json({ msg: "Product updated succesfully" });
+    return res.status(200).json({ msg: "Product updated succesfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+router.get("/delete/:id", auth, async (req, res) => {
+  try {
+    if (req.user === null || req.user.role !== "admin") {
+      return res.status(401).json({});
+    }
+
+    const product = {
+      id: req.params.id,
+      isdeleted: true,
+    };
+
+    const response = await deleteProductTransaction(product, res);
+
+    return res
+      .status(200)
+      .json({ msg: "Product deleted succesfully", response });
   } catch (error) {
     console.log(error);
     return res.status(500).send();
@@ -122,7 +146,7 @@ const createProductTransaction = async (req) => {
     files = [files];
   }
 
-  await sql.begin(async (sql) => {
+  return await sql.begin(async (sql) => {
     const create = await sql`INSERT INTO product ${sql(
       req.body,
       "name",
@@ -150,6 +174,7 @@ const createProductTransaction = async (req) => {
         create[0].id
       }, ${"/images/" + create[0].id + "/" + files[i].md5})`;
     }
+    return create[0].id;
   });
 };
 
@@ -196,6 +221,28 @@ const updateProductTransaction = async (req) => {
         update[0].id
       }, ${"/images/" + update[0].id + "/" + files[i].md5})`;
     }
+  });
+};
+
+const deleteProductTransaction = async (product, res) => {
+  return await sql.begin(async (sql) => {
+    await sql`UPDATE product set ${sql(product, "isdeleted")} WHERE id = ${
+      product.id
+    }`;
+
+    const response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image) 
+        as images 
+        from product 
+        inner join images 
+        on images.productid = product.id
+        where isdeleted = false
+        GROUP BY product.id;`;
+
+    if (!response.count) {
+      return res.status(400).json({});
+    }
+
+    return response;
   });
 };
 

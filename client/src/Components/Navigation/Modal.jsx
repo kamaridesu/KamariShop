@@ -1,7 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import styles from "../Navigation/Modal.Module.scss";
 
-export const Modal = ({ children, setModalVisible, modalTriggerElement }) => {
+export const Modal = ({
+  children,
+  setModalVisible,
+  modalTriggerElement,
+  classname,
+}) => {
   const container = useRef();
 
   let Handler = (event) => {
@@ -21,7 +26,12 @@ export const Modal = ({ children, setModalVisible, modalTriggerElement }) => {
   });
 
   return (
-    <div ref={container} className={styles.modal}>
+    <div
+      ref={container}
+      className={
+        classname ? `${styles.modal} ${styles[classname]}` : `${styles.modal}`
+      }
+    >
       {children}
     </div>
   );

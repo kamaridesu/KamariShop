@@ -4,7 +4,7 @@ import { AiOutlineCloudUpload, AiOutlinePlus } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { FormMsg } from "../../Errors/FormMsg";
 import TextareaAutosize from "react-textarea-autosize";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import useQuery from "../../Hooks/useQuery";
 
 export const ProductForm = () => {
@@ -18,6 +18,7 @@ export const ProductForm = () => {
   const [color, setColor] = useState("");
   const [gender, setGender] = useState("");
   const [message, setMessage] = useState({ msg: "", status: null });
+  const history = useHistory();
   const { loading, data, status, setApiOptions } = useQuery({
     url: id ? `/api/products/product/${id}` : null,
     method: "GET",
@@ -25,7 +26,12 @@ export const ProductForm = () => {
 
   useEffect(() => {
     if (loading === false && data.msg) {
-      setMessage({ msg: data?.msg, status: status });
+      if (status === 200 && data.id) {
+        history.push(`/products/editproduct/${data.id}`);
+        setMessage({ msg: data.msg, status: status });
+        return;
+      }
+      setMessage({ msg: data.msg, status: status });
       return;
     }
     if (loading === false && id && data[0].id) {
@@ -36,7 +42,7 @@ export const ProductForm = () => {
       setGender(data[0].gender);
       setColor(data[0].color);
       data[0].images.forEach((url) => {
-        fetch(`${url}`, { method: "get" })
+        fetch(`${url}`, { method: "GET" })
           .then((response) => response.blob())
           .then((blob) => {
             blob.url = URL.createObjectURL(blob);

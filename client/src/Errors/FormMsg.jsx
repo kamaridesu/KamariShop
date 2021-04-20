@@ -4,7 +4,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import styles from "./FormMsg.Module.scss";
 
 export const FormMsg = ({ msg, clear }) => {
-  console.log(msg);
   return (
     <div
       className={
