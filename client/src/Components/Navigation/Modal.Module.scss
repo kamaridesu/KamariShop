@@ -1,4 +1,4 @@
-$breakpoint-tablet: 768px;
+$breakpoint-tablet: 769px;
 
 .modal {
   display: flex;
@@ -25,7 +25,7 @@ $breakpoint-tablet: 768px;
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .modal {
     width: 100vw !important;
   }

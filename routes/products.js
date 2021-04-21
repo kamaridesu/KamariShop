@@ -5,11 +5,11 @@ const { sql } = require("../configDB");
 const util = require("util");
 const { mkdir, rmdir, readdir, unlink } = require("../utility/utils");
 
-router.get("/all", auth, async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
-    if (req.user === null || req.user.role !== "admin") {
-      return res.status(401).json();
-    }
+    // if (req.user === null || req.user.role !== "admin") {
+    //   return res.status(401).json();
+    // }
     const response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image) 
         as images 
         from product 
@@ -19,7 +19,7 @@ router.get("/all", auth, async (req, res) => {
         GROUP BY product.id;`;
 
     if (!response.count) {
-      return res.status(400).json([]);
+      return res.status(400).json({ response: [] });
     }
 
     return res.json({ response });
@@ -70,7 +70,7 @@ router.post("/create", auth, async (req, res) => {
     const id = await createProductTransaction(req);
 
     return res.json({ msg: "Product created succesfully", id });
-  } catch (err) {
+  } catch (error) {
     console.log(error);
     return res.status(500).send();
   }
@@ -239,7 +239,7 @@ const deleteProductTransaction = async (product, res) => {
         GROUP BY product.id;`;
 
     if (!response.count) {
-      return res.status(400).json({});
+      return res.status(400).json({ response: [] });
     }
 
     return response;

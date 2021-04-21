@@ -27,6 +27,9 @@ export const Products = () => {
   };
 
   useEffect(() => {
+    if (loading === false) {
+      setProducts(data.response);
+    }
     if (loading === false && data?.msg) {
       setMessage({ msg: data.msg, status: status });
     }
@@ -34,7 +37,7 @@ export const Products = () => {
 
   return (
     <>
-      {!data ? (
+      {products.length === 0 ? (
         <div className={styles.empty}>
           <div>
             <Link to="/products/productform">
@@ -57,7 +60,7 @@ export const Products = () => {
             </Link>
           </div>
           <div className={styles.products}>
-            <Product data={data} deleteProduct={deleteProduct} />
+            <Product products={products} deleteProduct={deleteProduct} />
           </div>
         </div>
       )}
@@ -78,8 +81,8 @@ const Confirmation = ({ close, callback }) => {
   );
 };
 
-const Product = ({ data, deleteProduct }) => {
-  return data.response.map((el) => {
+const Product = ({ products, deleteProduct }) => {
+  return products.map((el) => {
     return (
       <div key={el.id}>
         <Link to={`/products/editproduct/${el.id}`}>

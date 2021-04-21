@@ -6,13 +6,15 @@ export const IconButton = ({ Icon, ModalContent, classname, callback }) => {
   const [modalTriggerElement, setModalTriggerElement] = useState(null);
 
   return (
-    <div>
-      <Icon
+    <>
+      <div
         onClick={(e) => {
           setModalVisible((e) => !e);
           setModalTriggerElement(e.target);
         }}
-      />
+      >
+        <Icon />
+      </div>
       {modalVisble && (
         <Modal
           classname={classname}
@@ -25,6 +27,6 @@ export const IconButton = ({ Icon, ModalContent, classname, callback }) => {
           />
         </Modal>
       )}
-    </div>
+    </>
   );
 };

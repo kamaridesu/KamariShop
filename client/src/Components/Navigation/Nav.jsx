@@ -21,9 +21,9 @@ export const Nav = () => {
         </Link>
       </div>
       <div className={styles.middleSection}>
-        <Link to="/man">Men</Link>
+        <Link to="/hats/man">Men</Link>
         <span></span>
-        <Link to="/women">Women</Link>
+        <Link to="/hats/women">Women</Link>
       </div>
       <div className={styles.rightSection}>
         <IconButton Icon={BsPersonFill} ModalContent={UserNavMenu} />
