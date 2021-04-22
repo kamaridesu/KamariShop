@@ -111,6 +111,53 @@ router.get("/delete/:id", auth, async (req, res) => {
   }
 });
 
+router.get("/wishlisted", auth, async (req, res) => {
+  try {
+    if (req.user === null) {
+      return res.status(401).json({});
+    }
+
+    const response = await sql`SELECT productid FROM wishlist WHERE userid = ${req.user.id}`;
+
+    if (!response.count) {
+      return res.json({ response: [] });
+    }
+
+    return res.json({ response: response.map((v) => v.productid) });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+router.post("/wishlist/:id/:operation", auth, async (req, res) => {
+  try {
+    if (req.user === null) {
+      return res.status(401).json({});
+    }
+
+    const row = {
+      userid: req.user.id,
+      productid: req.params.id,
+    };
+
+    const response = await sql`SELECT * FROM wishlist`;
+
+    if (req.params.operation === "add") {
+      //TODO ADD TO TABLE
+      await sql`INSERT INTO wishlist ${sql(row, "userid", "productid")}`;
+    } else {
+      //TODO REMOVE FROM TABLE
+      await sql`DELETE FROM wishlist WHERE userid = ${row.userid} AND productid = ${row.productid}`;
+    }
+
+    return res.json({});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
 const isProductValid = (req, res) => {
   if (req.user === null || req.user.role !== "admin") {
     res.status(401).json();
@@ -160,7 +207,7 @@ const createProductTransaction = async (req) => {
     let url;
 
     if (process.env.NODE_ENV === "PROD") {
-      url = `/app/client/build/images/${create[0].id}`;
+      url = `./client/build/images/${create[0].id}`;
     } else {
       url = `./client/public/images/${create[0].id}`;
     }
@@ -203,7 +250,7 @@ const updateProductTransaction = async (req) => {
     let url;
 
     if (process.env.NODE_ENV === "PROD") {
-      url = `/app/client/build/images/${update[0].id}`;
+      url = `./client/build/images/${update[0].id}`;
     } else {
       url = `./client/public/images/${update[0].id}`;
     }

@@ -174,10 +174,10 @@ export const ProductForm = () => {
                 Man
               </div>
               <div
-                className={gender === "female" ? styles.genderActive : null}
-                onClick={() => setGender("female")}
+                className={gender === "women" ? styles.genderActive : null}
+                onClick={() => setGender("women")}
               >
-                Female
+                Women
               </div>
             </div>
           </div>

@@ -17,9 +17,9 @@ app.use(express.static(path.join(__dirname, "client/build")));
 
 connectDB(async () => {
   if (process.env.NODE_ENV === "PROD") {
-    if (!fs.existsSync("/app/client/build/images"))
+    if (!fs.existsSync("./client/build/images"))
       try {
-        await mkdir("/app/client/build/images");
+        await mkdir("./client/build/images");
         console.log("Folder created");
       } catch (error) {
         console.log(error);
