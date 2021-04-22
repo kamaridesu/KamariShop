@@ -46,7 +46,7 @@ export const ProductsContextProvider = ({ children }) => {
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
     }
   }, [wishlist]);
-  console.log("wish", wishlist);
+
   return (
     <ProductsContext.Provider value={{ products, wishlist, toggleFavProduct }}>
       {children}
@@ -77,8 +77,6 @@ const useProductQuery = (setProducts) => {
 const useWishlistQuery = (auth, setWishlist) => {
   const wishlistQuery = useQuery({});
 
-  console.log("wishlist loading", wishlistQuery.loading);
-
   useEffect(() => {
     if (auth.isLoggedIn) {
       wishlistQuery.setApiOptions({
@@ -94,7 +92,7 @@ const useWishlistQuery = (auth, setWishlist) => {
       }
     }
   }, [auth.isLoggedIn]);
-  console.log("wishlist data", wishlistQuery.data);
+
   useEffect(() => {
     if (
       wishlistQuery.loading === false &&

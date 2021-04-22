@@ -25,10 +25,6 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, [data, loading]);
 
-  useEffect(() => {
-    console.log("auth", auth.isLoggedIn);
-  }, [auth.isLoggedIn]);
-
   return (
     <AuthStateContext.Provider value={{ auth, setAuth }}>
       {children}
