@@ -10,10 +10,13 @@ import { useProducts } from "../../Context/ProductsContextProvider";
 import { IconButton } from "../Navigation/IconButton";
 import styles from "./ProductsScreen.Module.scss";
 
+import { Slider } from "antd";
+import "antd/dist/antd.css";
+
 export const ProductsScreen = () => {
   const { gender } = useParams();
   const { products } = useProducts();
-  const [price, setPrice] = useState(100);
+  const [price, setPrice] = useState([0, 100]);
   const [color, setColor] = useState(null);
   const [order, setOrder] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -33,6 +36,10 @@ export const ProductsScreen = () => {
           setColor={setColor}
           setOrder={setOrder}
           order={order}
+          price={price}
+          setPrice={setPrice}
+          gender={gender}
+          setFilteredProducts={setFilteredProducts}
           filteredProducts={filteredProducts.length}
         />
       </div>
@@ -47,6 +54,8 @@ const FilterModal = ({
   color,
   setColor,
   filteredProducts,
+  price,
+  setPrice,
   close,
   setOrder,
   order,
@@ -79,11 +88,29 @@ const FilterModal = ({
           <Colors color={color} setColor={setColor} />
         </div>
       </div>
+      <div className={styles.pricewrapper}>
+        <p>
+          <span>Price</span>
+          <span>
+            {price[0]} € - {price[1]} €
+          </span>
+        </p>
+        <div>
+          <Slider
+            range
+            defaultValue={[0, 50]}
+            allowCross={false}
+            onChange={(e) => setPrice(e)}
+            value={price}
+          />
+        </div>
+      </div>
       <div className={styles.buttonswrapper}>
         <button
           onClick={() => {
             setColor(null);
             setOrder(null);
+            setPrice([0, 100]);
           }}
         >
           Reset Filters
@@ -164,11 +191,13 @@ const Icon = () => {
 };
 
 const filter = (products, price, color, order, gender) => {
-  console.log(products);
   const array = products.filter((product) => {
+    console.log(price);
+    console.log(price[0] < product.price < price[1]);
+    console.log(price[0], product.price, price[1]);
     let keep = false;
 
-    if (product.price < price) {
+    if (price[0] < product.price && product.price < price[1]) {
       keep = true;
       if (color) {
         keep = product.color === color;

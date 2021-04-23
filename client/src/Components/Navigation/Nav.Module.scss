@@ -30,14 +30,14 @@
       text-transform: uppercase;
       font-size: 13px;
       font-weight: 600;
-
       letter-spacing: 0.7px;
+      padding: 1px;
     }
 
     span::before {
       content: "";
       width: 1px;
-      height: 20px;
+      height: 24px;
       background-color: #313131;
       position: absolute;
     }
@@ -59,6 +59,13 @@
   }
 }
 
+.active {
+  border-radius: 4px !important;
+  border: 0px solid black !important;
+  color: white !important;
+  background-color: black !important;
+}
+
 @media (min-width: 768px) {
   .nav {
     padding: 0 40px;
@@ -66,6 +73,10 @@
     .middleSection {
       a {
         font-size: 19px;
+      }
+
+      span::before {
+        height: 32px !important;
       }
     }
 

@@ -89,11 +89,12 @@
   }
 
   .orderwrapper,
-  .colorswrapper {
+  .colorswrapper,
+  .pricewrapper {
     display: grid;
-    grid-gap: 1rem;
+    //grid-gap: 1rem;
     font-weight: 600;
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
 
   .orderbuttons {
@@ -162,6 +163,15 @@
       }
     }
   }
+
+  .pricewrapper {
+    height: fit-content;
+
+    & > p:nth-child(1) {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
 }
 
 .active {
@@ -184,7 +194,7 @@
 
 @media (min-width: 768px) {
   .cardsWrapper {
-    grid-template-columns: 1fr 1fr 1fr 1fr !important;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr !important;
     grid-gap: 20px 14px !important;
     padding: 0 44px !important;
   }
