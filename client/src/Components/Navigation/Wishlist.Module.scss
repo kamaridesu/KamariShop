@@ -1,0 +1,129 @@
+.container {
+  width: 100%;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 0.15rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #000000;
+  }
+
+  .product {
+    display: flex;
+    padding: 1rem;
+    .imagewrapper {
+      height: 135px;
+      width: 90px;
+      display: table;
+      .image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .productinfo {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-left: 1rem;
+      .name {
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+
+      .bottom {
+        display: grid;
+        grid-gap: 15px;
+        .colorwrapper {
+          width: fit-content;
+          border: 1px solid black;
+          display: inline-block;
+          padding: 8px;
+          .color {
+            background-color: green;
+            width: 53px;
+            height: 6px;
+            display: block;
+          }
+        }
+
+        .bottombottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          .iconswrapper {
+            display: grid;
+            grid-auto-flow: column;
+            grid-gap: 25px;
+
+            > span {
+              position: relative;
+              display: flex;
+
+              & svg {
+                width: 24px;
+                height: auto;
+                color: #bdbdbd;
+              }
+            }
+
+            svg:nth-child(2) {
+              position: absolute;
+              top: 0;
+              left: 0;
+              visibility: hidden;
+            }
+
+            span:nth-child(1):hover svg {
+              visibility: visible;
+              color: #e83c55;
+            }
+
+            span:nth-child(2):hover svg {
+              visibility: visible;
+              color: #6fd5a4;
+            }
+          }
+
+          .price {
+            font-weight: 600;
+            letter-spacing: 2px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  > img {
+    width: 250px;
+    height: 250px;
+  }
+
+  > p {
+    letter-spacing: 2px;
+    font-size: 20px;
+    margin-top: 2rem;
+    font-weight: 600;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 24rem !important;
+    height: 89vh;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  AiFillHeart,
   AiOutlineClose,
   AiOutlineFilter,
   AiOutlineHeart,
@@ -11,7 +12,7 @@ import { IconButton } from "../Navigation/IconButton";
 import styles from "./ProductsScreen.Module.scss";
 
 import { Slider } from "antd";
-import "antd/dist/antd.css";
+import "./antd.css";
 
 export const ProductsScreen = () => {
   const { gender } = useParams();
@@ -123,22 +124,18 @@ const FilterModal = ({
 
 const Colors = ({ color, setColor }) => {
   const colors = [
-    "white",
-    "silver",
-    "gray",
-    "black",
-    "red",
-    "maroon",
-    "yellow",
-    "olive",
-    "lime",
-    "green",
-    "aqua",
-    "teal",
-    "blue",
-    "navy",
-    "fuchsia",
-    "purple",
+    "#F03524",
+    "#ED6F2D",
+    "#58B24C",
+    "#684020",
+    "#ff56ad",
+    "#D0BF93",
+    "#838383",
+    "#A242F4",
+    "#FEFC53",
+    "#3C59F6",
+    "#FFFFFF",
+    "#000000",
   ];
 
   return colors.map((el, index) => {
@@ -170,10 +167,13 @@ const Product = ({ gender, filteredProducts }) => {
           <p className={styles.name}>{product.name}</p>
           <div>
             <span className={styles.price}>{product.price}€</span>
-            <AiOutlineHeart
-              className={wishlist.includes(product.id) ? styles.active : null}
-              onClick={() => toggleFavProduct(product.id)}
-            />
+            <div onClick={() => toggleFavProduct(product.id)}>
+              {wishlist.includes(product.id) ? (
+                <AiFillHeart style={{ color: "red" }} />
+              ) : (
+                <AiOutlineHeart />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -192,9 +192,6 @@ const Icon = () => {
 
 const filter = (products, price, color, order, gender) => {
   const array = products.filter((product) => {
-    console.log(price);
-    console.log(price[0] < product.price < price[1]);
-    console.log(price[0], product.price, price[1]);
     let keep = false;
 
     if (price[0] < product.price && product.price < price[1]) {

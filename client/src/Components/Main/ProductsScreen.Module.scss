@@ -29,9 +29,9 @@
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px 5px;
     padding: 2px;
-    height: fit-content;
+    //height: fit-content;
     .card {
-      height: fit-content;
+      //height: fit-content;
       .imageWrapper {
         .image {
           width: 100%;
@@ -43,8 +43,8 @@
       .productInfo {
         display: inline-grid;
         padding: 0 5px;
-        grid-gap: 5px;
         width: -webkit-fill-available;
+        grid-gap: 5px;
         .name {
           text-overflow: ellipsis;
           overflow: hidden;
@@ -52,6 +52,7 @@
           letter-spacing: 0.4px;
           font-size: 12px;
           font-weight: 300;
+          margin-bottom: 0;
         }
 
         > div {
@@ -62,7 +63,7 @@
             font-weight: 600;
           }
 
-          > svg {
+          > div > svg {
             height: 20px;
             width: 20px;
           }
@@ -83,7 +84,7 @@
     text-align: end;
 
     > svg {
-      width: 2rem;
+      width: 1.5rem;
       height: auto;
     }
   }
@@ -92,7 +93,7 @@
   .colorswrapper,
   .pricewrapper {
     display: grid;
-    //grid-gap: 1rem;
+    grid-gap: 1rem;
     font-weight: 600;
     font-size: 1rem;
   }

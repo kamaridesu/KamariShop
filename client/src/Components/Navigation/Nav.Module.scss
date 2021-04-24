@@ -37,7 +37,7 @@
     span::before {
       content: "";
       width: 1px;
-      height: 24px;
+      height: 20px;
       background-color: #313131;
       position: absolute;
     }
@@ -76,7 +76,7 @@
       }
 
       span::before {
-        height: 32px !important;
+        height: 26px !important;
       }
     }
 

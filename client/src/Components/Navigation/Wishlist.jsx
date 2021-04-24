@@ -1,5 +1,58 @@
 import React from "react";
+import { BsBag, BsBagFill, BsTrash, BsTrashFill } from "react-icons/bs";
+import { useProducts } from "../../Context/ProductsContextProvider";
+import styles from "./Wishlist.Module.scss";
+import logo from "../../Images/wishlist.png";
 
 export const Wishlist = () => {
-  return <div>Wishlist</div>;
+  const { products, wishlist, toggleFavProduct } = useProducts();
+  return (
+    <div className={styles.container}>
+      {wishlist.length === 0 ? (
+        <div className={styles.empty}>
+          <img src={logo} alt="" />
+          <p>Your wishlist is empty.</p>
+        </div>
+      ) : (
+        products.map((product) => {
+          if (wishlist.includes(product.id)) {
+            return (
+              <Product product={product} toggleFavProduct={toggleFavProduct} />
+            );
+          }
+        })
+      )}
+    </div>
+  );
+};
+
+const Product = ({ product, toggleFavProduct }) => {
+  return (
+    <div className={styles.product} key={product.id}>
+      <div className={styles.imagewrapper}>
+        <img src={product.images[0]} alt="" className={styles.image} />
+      </div>
+      <div className={styles.productinfo}>
+        <p className={styles.name}>{product.name}</p>
+        <div className={styles.bottom}>
+          <div className={styles.colorwrapper}>
+            <span className={styles.color}>{"\u00A0"}</span>
+          </div>
+          <div className={styles.bottombottom}>
+            <div className={styles.iconswrapper}>
+              <span onClick={() => toggleFavProduct(product.id)}>
+                <BsTrash />
+                <BsTrashFill />
+              </span>
+              <span>
+                <BsBag />
+                <BsBagFill />
+              </span>
+            </div>
+            <div className={styles.price}>{product.price} €</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };

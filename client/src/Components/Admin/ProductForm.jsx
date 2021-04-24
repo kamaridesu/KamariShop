@@ -197,22 +197,18 @@ export const ProductForm = () => {
 
 const Colors = ({ color, setColor }) => {
   const colors = [
-    "white",
-    "silver",
-    "gray",
-    "black",
-    "red",
-    "maroon",
-    "yellow",
-    "olive",
-    "lime",
-    "green",
-    "aqua",
-    "teal",
-    "blue",
-    "navy",
-    "fuchsia",
-    "purple",
+    "#F03524",
+    "#ED6F2D",
+    "#58B24C",
+    "#684020",
+    "#ff56ad",
+    "#D0BF93",
+    "#838383",
+    "#A242F4",
+    "#FEFC53",
+    "#3C59F6",
+    "#FFFFFF",
+    "#000000",
   ];
 
   return colors.map((el, index) => {

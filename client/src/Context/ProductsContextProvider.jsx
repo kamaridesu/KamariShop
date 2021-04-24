@@ -21,16 +21,20 @@ export const ProductsContextProvider = ({ children }) => {
     (id) => {
       if (wishlist.includes(id)) {
         setWishlist((prev) => prev.filter((productId) => productId !== id));
-        updateWishlist.setApiOptions({
-          url: `/api/products/wishlist/${id}/remove`,
-          method: "POST",
-        });
+        if (auth.isLoggedIn) {
+          updateWishlist.setApiOptions({
+            url: `/api/products/wishlist/${id}/remove`,
+            method: "POST",
+          });
+        }
       } else {
         setWishlist((prev) => [...prev, id]);
-        updateWishlist.setApiOptions({
-          url: `/api/products/wishlist/${id}/add`,
-          method: "POST",
-        });
+        if (auth.isLoggedIn) {
+          updateWishlist.setApiOptions({
+            url: `/api/products/wishlist/${id}/add`,
+            method: "POST",
+          });
+        }
       }
     },
     [wishlist]
