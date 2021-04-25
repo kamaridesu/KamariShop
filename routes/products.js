@@ -29,11 +29,11 @@ router.get("/all", async (req, res) => {
   }
 });
 
-router.get("/product/:id", auth, async (req, res) => {
+router.get("/product/:id", async (req, res) => {
   try {
-    if (req.user === null || req.user.role !== "admin") {
-      return res.status(401).json({});
-    }
+    // if (req.user === null || req.user.role !== "admin") {
+    //   return res.status(401).json({});
+    // }
 
     const product = {
       id: req.params.id,
