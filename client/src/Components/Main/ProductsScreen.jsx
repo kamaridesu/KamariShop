@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useProducts } from "../../Context/ProductsContextProvider";
 import { IconButton } from "../Navigation/IconButton";
 import styles from "./ProductsScreen.Module.scss";
+import logo from "../../Images/emptyfilter.png";
 
 import { Slider } from "antd";
 import "./antd.css";
@@ -25,7 +26,7 @@ export const ProductsScreen = () => {
   useEffect(() => {
     setFilteredProducts(filter(products, price, color, order, gender));
   }, [products, gender, price, order, color]);
-
+  console.log(products);
   return (
     <div className={styles.productScreen}>
       <div className={styles.header}>
@@ -44,9 +45,17 @@ export const ProductsScreen = () => {
           filteredProducts={filteredProducts.length}
         />
       </div>
-      <div className={styles.cardsWrapper}>
-        <Product gender={gender} filteredProducts={filteredProducts} />
-      </div>
+      {filteredProducts.length === 0 ? (
+        <div className={styles.empty}>
+          <img src={logo} alt="" />
+          <p className={styles.top}>There are no results</p>
+          <p>Try selection other filters</p>
+        </div>
+      ) : (
+        <div className={styles.cardsWrapper}>
+          <Product gender={gender} filteredProducts={filteredProducts} />
+        </div>
+      )}
     </div>
   );
 };

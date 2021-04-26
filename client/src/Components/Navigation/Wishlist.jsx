@@ -14,13 +14,21 @@ export const Wishlist = () => {
           <p>Your wishlist is empty.</p>
         </div>
       ) : (
-        products.map((product) => {
-          if (wishlist.includes(product.id)) {
-            return (
-              <Product product={product} toggleFavProduct={toggleFavProduct} />
-            );
-          }
-        })
+        <>
+          <p className={styles.quantity}>
+            Wishlist <span>({wishlist.length}) </span>
+          </p>
+          {products.map((product) => {
+            if (wishlist.includes(product.id)) {
+              return (
+                <Product
+                  product={product}
+                  toggleFavProduct={toggleFavProduct}
+                />
+              );
+            }
+          })}
+        </>
       )}
     </div>
   );
@@ -36,7 +44,12 @@ const Product = ({ product, toggleFavProduct }) => {
         <p className={styles.name}>{product.name}</p>
         <div className={styles.bottom}>
           <div className={styles.colorwrapper}>
-            <span className={styles.color}>{"\u00A0"}</span>
+            <span
+              style={{ backgroundColor: `${product.color}` }}
+              className={styles.color}
+            >
+              {"\u00A0"}
+            </span>
           </div>
           <div className={styles.bottombottom}>
             <div className={styles.iconswrapper}>

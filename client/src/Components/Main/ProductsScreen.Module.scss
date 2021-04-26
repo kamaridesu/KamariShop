@@ -177,6 +177,22 @@
   }
 }
 
+.empty {
+  display: flex;
+  height: 79vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .top {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+  > img {
+    width: 200px;
+  }
+}
+
 .active {
   color: red;
 }
