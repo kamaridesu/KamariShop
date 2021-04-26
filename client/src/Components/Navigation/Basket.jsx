@@ -13,19 +13,26 @@ export const Basket = () => {
           <p>Your basket is empty.</p>
         </div>
       ) : (
-        <div>
+        <div className={styles.full}>
           <p className={styles.quantity}>
-            Wishlist <span>(10) </span>
+            Basket <span>(10) </span>
           </p>
-          <div>
-            <Product />
-          </div>
-          <div>
-            <div>
-              <p>TOTAL</p>
-              <p>1.200,89€</p>
+          <div className={styles.mid}>
+            <div className={styles.productswrapper}>
+              <Product />
+              <Product />
+              <Product />
+              <Product />
+              <Product />
+              <Product />
             </div>
-            <button>PROCESS ORDER</button>
+          </div>
+          <div className={styles.bottom}>
+            <div className={styles.totalprice}>
+              <p className={styles.total}>TOTAL</p>
+              <p className={styles.price}>1.200,89€</p>
+            </div>
+            <button className={styles.button}>PROCESS ORDER</button>
           </div>
         </div>
       )}
@@ -37,15 +44,25 @@ const Product = () => {
   return (
     <div className={styles.product}>
       <div className={styles.imagewrapper}>
-        <img src="" alt="" className={styles.image} />
+        <img
+          src="http://localhost:3000/images/ca44d05f-3312-40a4-923f-38c6fa17cf68/3b19de33cf5a73de85f448ad4f07a76d"
+          alt=""
+          className={styles.image}
+        />
       </div>
       <div className={styles.productinfo}>
         <p className={styles.name}>This is a name</p>
         <div className={styles.bottom}>
-          <div className={styles.colorwrapper}>
-            <span style={{ backgroundColor: `black` }} className={styles.color}>
-              {"\u00A0"}
-            </span>
+          <div className={styles.colorquantity}>
+            <div className={styles.colorwrapper}>
+              <span
+                style={{ backgroundColor: `black` }}
+                className={styles.color}
+              >
+                {"\u00A0"}
+              </span>
+            </div>
+            <Counter />
           </div>
           <div className={styles.bottombottom}>
             <div className={styles.iconswrapper}>
@@ -63,5 +80,15 @@ const Product = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Counter = () => {
+  return (
+    <span className={styles.quantitywrapper}>
+      <button className={styles.minus}>-</button>
+      <span className={styles.number}>1</span>
+      <button className={styles.plus}>+</button>
+    </span>
   );
 };
