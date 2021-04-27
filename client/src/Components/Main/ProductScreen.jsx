@@ -8,7 +8,7 @@ import styles from "./ProductScreen.Module.scss";
 export const ProductScreen = () => {
   const { id } = useParams();
   const [product, setProduct] = useState();
-  const { wishlist, toggleFavProduct } = useProducts();
+  const { wishlist, toggleFavProduct, addToBasket } = useProducts();
   const { data, loading } = useQuery({
     url: `/api/products/product/${id}`,
     method: "GET",
@@ -50,7 +50,9 @@ export const ProductScreen = () => {
               <img src={product?.images[0]} alt="" />
             </div>
             <div className={styles.description}>{product?.description}</div>
-            <button className={styles.button}>ADD</button>
+            <button className={styles.button} onClick={() => addToBasket(id)}>
+              ADD
+            </button>
           </div>
         </div>
       </div>

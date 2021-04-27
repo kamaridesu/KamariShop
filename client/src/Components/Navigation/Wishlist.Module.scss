@@ -40,13 +40,15 @@
 
     .productinfo {
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      display: grid;
       padding-left: 1rem;
+      grid-template-rows: 1fr;
       .name {
         font-weight: 600;
         letter-spacing: 1px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
 
       .bottom {

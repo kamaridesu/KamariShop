@@ -26,7 +26,7 @@ export const ProductsScreen = () => {
   useEffect(() => {
     setFilteredProducts(filter(products, price, color, order, gender));
   }, [products, gender, price, order, color]);
-  console.log(products);
+
   return (
     <div className={styles.productScreen}>
       <div className={styles.header}>

@@ -24,6 +24,7 @@ export const Wishlist = () => {
                 <Product
                   product={product}
                   toggleFavProduct={toggleFavProduct}
+                  key={product.id}
                 />
               );
             }
@@ -36,7 +37,7 @@ export const Wishlist = () => {
 
 const Product = ({ product, toggleFavProduct }) => {
   return (
-    <div className={styles.product} key={product.id}>
+    <div className={styles.product}>
       <div className={styles.imagewrapper}>
         <img src={product.images[0]} alt="" className={styles.image} />
       </div>

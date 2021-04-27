@@ -17,6 +17,7 @@ export const ProductsContextProvider = ({ children }) => {
   const { auth } = useAuth();
   const updateWishlist = useQuery({});
 
+  //adds or removes product from wishlist context
   const toggleFavProduct = useCallback(
     (id) => {
       if (wishlist.includes(id)) {
@@ -40,19 +41,30 @@ export const ProductsContextProvider = ({ children }) => {
     [wishlist]
   );
 
+  const addToBasket = useCallback(async (id) => {
+    const res = await fetch(`/api/products/basket/${id}/add`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+  });
+
   useProductQuery(setProducts);
   useWishlistQuery(auth, setWishlist);
-  //useBasketQuery(auth, setBasket);
+  useBasketQuery(auth, setBasket);
 
   useEffect(() => {
-    if (auth.isLoggedIn) {
-    } else {
+    if (!auth.isLoggedIn) {
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      localStorage.setItem("basket", JSON.stringify(basket));
     }
-  }, [wishlist]);
+  }, [wishlist, basket]);
 
   return (
-    <ProductsContext.Provider value={{ products, wishlist, toggleFavProduct }}>
+    <ProductsContext.Provider
+      value={{ products, wishlist, toggleFavProduct, addToBasket }}
+    >
       {children}
     </ProductsContext.Provider>
   );
@@ -65,6 +77,7 @@ export const useProducts = () => {
   return value;
 };
 
+//get the products data in first render
 const useProductQuery = (setProducts) => {
   const productsQuery = useQuery({
     url: "/api/products/all",
@@ -81,6 +94,7 @@ const useProductQuery = (setProducts) => {
 const useWishlistQuery = (auth, setWishlist) => {
   const wishlistQuery = useQuery({});
 
+  //every time auth changes we get the appropiate wishlisted products
   useEffect(() => {
     if (auth.isLoggedIn) {
       wishlistQuery.setApiOptions({
@@ -106,30 +120,30 @@ const useWishlistQuery = (auth, setWishlist) => {
       setWishlist(wishlistQuery.data.response);
     }
   }, [wishlistQuery.loading, auth.isLoggedIn, wishlistQuery.data]);
-
-  // useEffect(() => {
-  //   if (wishlistQuery.loading === false && wishlistQuery.data)
-  //     if (auth.isLoggedIn) {
-  //     } else {
-  //       localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  //     }
-  // }, [wishlist]);
 };
 
 const useBasketQuery = (auth, setBasket) => {
-  const basket = useQuery({});
+  const basketQuery = useQuery({});
 
   useEffect(() => {
     if (auth.isLoggedIn) {
-      basket.setApiOptions({
+      basketQuery.setApiOptions({
         url: `/api/products/basket`,
         method: "GET",
       });
     } else {
-      setBasket(JSON.parse(localStorage.getItem("basket")));
+      const lc = localStorage.getItem("basket");
+      if (lc) {
+        setBasket(JSON.parse(lc));
+      } else {
+        setBasket([]);
+      }
     }
-    if (basket.loading === false && auth.isLoggedIn) {
-      setBasket(basket.data);
+  }, [auth.isLoggedIn]);
+
+  useEffect(() => {
+    if (basketQuery.loading === false && auth.isLoggedIn && basketQuery.data) {
+      setBasket(basketQuery.data.response);
     }
-  }, [basket.loading, auth.isLoggedIn]);
+  }, [basketQuery.loading, auth.isLoggedIn, basketQuery.data]);
 };

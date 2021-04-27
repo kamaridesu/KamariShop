@@ -130,6 +130,67 @@ router.get("/wishlisted", auth, async (req, res) => {
   }
 });
 
+router.get("/basket", auth, async (req, res) => {
+  try {
+    if (req.user === null) {
+      return res.status(401).json({});
+    }
+
+    const response = await sql`
+    SELECT productid, basket.quantity, product.quantity as stock FROM basket 
+    join product on product.id = productid
+    WHERE userid = ${req.user.id}`;
+
+    if (!response.count) {
+      return res.json({ response: [] });
+    }
+    console.log(response);
+    return res.json({ response });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+router.post("/basket/:id/:operation", auth, async (req, res) => {
+  try {
+    if (req.user === null) {
+      return res.status(401).json({});
+    }
+
+    const row = {
+      userid: req.user.id,
+      productid: req.params.id,
+      quantity: 1,
+    };
+
+    //const response = await sql`SELECT * FROM wishlist`;
+
+    if (req.params.operation === "add") {
+      const response = await sql`
+        SELECT productid, basket.quantity, product.quantity as stock FROM basket 
+        join product on product.id = productid
+        WHERE userid = ${req.user.id} AND productid = ${req.params.id}`;
+
+      //TODO ADD TO TABLE
+      await sql`INSERT INTO basket ${sql(
+        row,
+        "userid",
+        "productid",
+        "quantity"
+      )}`;
+    } else {
+      //TODO REMOVE FROM TABLE
+      await sql`DELETE FROM wishlist WHERE userid = ${row.userid} AND productid = ${row.productid}`;
+    }
+
+    return res.json({});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
 router.post("/wishlist/:id/:operation", auth, async (req, res) => {
   try {
     if (req.user === null) {

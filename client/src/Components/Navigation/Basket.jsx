@@ -45,14 +45,14 @@ const Product = () => {
     <div className={styles.product}>
       <div className={styles.imagewrapper}>
         <img
-          src="http://localhost:3000/images/ca44d05f-3312-40a4-923f-38c6fa17cf68/3b19de33cf5a73de85f448ad4f07a76d"
+          src="http://localhost:3000/images/133d844a-9bd3-4cfd-be6f-3eebff5140d3/b3f7db141589b900b8fbdb097a5f7488"
           alt=""
           className={styles.image}
         />
       </div>
       <div className={styles.productinfo}>
         <p className={styles.name}>This is a name</p>
-        <div className={styles.bottom}>
+        <div className={styles.bottomcard}>
           <div className={styles.colorquantity}>
             <div className={styles.colorwrapper}>
               <span
