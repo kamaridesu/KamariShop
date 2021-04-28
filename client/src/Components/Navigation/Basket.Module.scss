@@ -73,6 +73,7 @@
             width: 100%;
             display: grid;
             padding-left: 1rem;
+            grid-template-rows: 1fr 1fr;
             .name {
               font-weight: 600;
               letter-spacing: 1px;
@@ -82,8 +83,9 @@
             }
 
             .bottomcard {
-              display: grid;
-              grid-gap: 15px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
 
               .colorquantity {
                 background-color: white;

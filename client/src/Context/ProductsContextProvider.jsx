@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import useQuery from "../Hooks/useQuery";
 import { useAuth } from "./AuthContextProvider";
+import { notification } from "antd";
+//import "./antd.css";
 
 export const ProductsContext = createContext();
 
@@ -42,12 +44,75 @@ export const ProductsContextProvider = ({ children }) => {
   );
 
   const addToBasket = useCallback(async (id) => {
-    const res = await fetch(`/api/products/basket/${id}/add`, {
-      method: "POST",
-      credentials: "include",
-    });
+    const product = basket.find((el) => el.productid === id);
 
-    const data = await res.json();
+    if (auth.isLoggedIn) {
+      const res = await fetch(`/api/products/basket/${id}/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ product }),
+      });
+
+      if (res.status === 200) {
+        setBasket((prev) => {
+          if (product) {
+            return prev.map((el) => {
+              if (el.productid === id) {
+                el.stock += 1;
+              }
+              return el;
+            });
+          } else {
+            return [...prev, { productid: id, stock: 1 }];
+          }
+        });
+        notification.success({
+          message: "basket",
+          description: "Product added successfully",
+        });
+      } else {
+        notification.error({
+          message: "basket",
+          description: "Stock exceeded",
+        });
+      }
+    } else {
+      const res = await fetch(`/api/products/basket/${id}/check`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ product }),
+      });
+
+      if (res.status === 200) {
+        setBasket((prev) => {
+          if (product) {
+            return prev.map((el) => {
+              if (el.productid === id) {
+                el.stock += 1;
+              }
+              return el;
+            });
+          } else {
+            return [...prev, { productid: id, stock: 1 }];
+          }
+        });
+        notification.success({
+          message: "basket",
+          description: "Product added successfully",
+        });
+      } else {
+        notification.error({
+          message: "basket",
+          description: "Stock exceeded",
+        });
+      }
+    }
   });
 
   useProductQuery(setProducts);
@@ -63,7 +128,7 @@ export const ProductsContextProvider = ({ children }) => {
 
   return (
     <ProductsContext.Provider
-      value={{ products, wishlist, toggleFavProduct, addToBasket }}
+      value={{ products, wishlist, toggleFavProduct, addToBasket, basket }}
     >
       {children}
     </ProductsContext.Provider>

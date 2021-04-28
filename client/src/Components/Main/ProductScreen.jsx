@@ -19,12 +19,12 @@ export const ProductScreen = () => {
       setProduct(data[0]);
     }
   }, [loading]);
-  console.log(product);
+
   return (
     <div className={styles.container}>
       <div className={styles.imageswrapper}>
-        {product?.images.map((image) => {
-          return <img src={image} alt="" />;
+        {product?.images.map((image, index) => {
+          return <img src={image} alt="" key={index} />;
         })}
       </div>
       <div className={styles.productinfo}>

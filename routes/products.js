@@ -144,7 +144,7 @@ router.get("/basket", auth, async (req, res) => {
     if (!response.count) {
       return res.json({ response: [] });
     }
-    console.log(response);
+
     return res.json({ response });
   } catch (error) {
     console.log(error);
@@ -152,35 +152,47 @@ router.get("/basket", auth, async (req, res) => {
   }
 });
 
-router.post("/basket/:id/:operation", auth, async (req, res) => {
+router.post("/basket/:id/:operation/", auth, async (req, res) => {
   try {
-    if (req.user === null) {
-      return res.status(401).json({});
-    }
-
-    const row = {
-      userid: req.user.id,
-      productid: req.params.id,
-      quantity: 1,
-    };
-
-    //const response = await sql`SELECT * FROM wishlist`;
-
     if (req.params.operation === "add") {
-      const response = await sql`
-        SELECT productid, basket.quantity, product.quantity as stock FROM basket 
-        join product on product.id = productid
-        WHERE userid = ${req.user.id} AND productid = ${req.params.id}`;
+      if (req.user === null) {
+        return res.status(401).json({});
+      }
 
-      //TODO ADD TO TABLE
-      await sql`INSERT INTO basket ${sql(
-        row,
-        "userid",
-        "productid",
-        "quantity"
-      )}`;
+      const row = {
+        userid: req.user.id,
+        productid: req.params.id,
+        quantity: req.body.product ? req.body.product.quantity + 1 : 1,
+      };
+
+      if (
+        !req.body.product ||
+        req.body.product.quantity < req.body.product.stock
+      ) {
+        await sql`INSERT INTO basket ${sql(
+          row,
+          "userid",
+          "productid",
+          "quantity"
+        )} ON CONFLICT (userid, productid) DO UPDATE SET quantity = ${
+          row.quantity
+        }`;
+
+        return res.json({});
+      } else {
+        return res.status(400).json({});
+      }
+    } else if (req.params.operation === "check") {
+      console.log(req.body.product);
+      if (
+        !req.body.product ||
+        req.body.product.quantity < req.body.product.stock
+      ) {
+        return res.json({});
+      } else {
+        return res.status(400).json({});
+      }
     } else {
-      //TODO REMOVE FROM TABLE
       await sql`DELETE FROM wishlist WHERE userid = ${row.userid} AND productid = ${row.productid}`;
     }
 
