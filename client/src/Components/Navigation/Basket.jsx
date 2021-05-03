@@ -3,7 +3,7 @@ import styles from "./Basket.Module.scss";
 import logo from "../../Images/emptybasket.svg";
 import { useProducts } from "../../Context/ProductsContextProvider";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { BsTrash, BsTrashFill } from "react-icons/bs";
+import { BsFilter, BsTrash, BsTrashFill } from "react-icons/bs";
 
 export const Basket = () => {
   const { products, basket } = useProducts();
@@ -27,8 +27,9 @@ export const Basket = () => {
                 return (
                   <Product
                     product={product}
-                    quantity={item.stock}
-                    key={product.id}
+                    quantity={item.quantity}
+                    key={item.productid}
+                    id={item.productid}
                   />
                 );
               })}
@@ -47,38 +48,46 @@ export const Basket = () => {
   );
 };
 
-const Product = ({ product, quantity }) => {
+const Product = ({ product, quantity, id }) => {
+  const { toggleFavProduct, deleteBasketProduct, setBasket } = useProducts();
+
   return (
     <div className={styles.product}>
       <div className={styles.imagewrapper}>
-        <img src={product.images[0]} alt="" className={styles.image} />
+        <img src={product?.images[0]} alt="" className={styles.image} />
       </div>
       <div className={styles.productinfo}>
-        <p className={styles.name}>{product.name}</p>
+        <p className={styles.name}>{product?.name}</p>
         <div className={styles.bottomcard}>
           <div className={styles.colorquantity}>
             <div className={styles.colorwrapper}>
               <span
-                style={{ backgroundColor: `${product.color}` }}
+                style={{ backgroundColor: `${product?.color}` }}
                 className={styles.color}
               >
                 {"\u00A0"}
               </span>
             </div>
-            <Counter quantity={quantity} />
+            <Counter quantity={quantity} id={id} />
           </div>
           <div className={styles.bottombottom}>
             <div className={styles.iconswrapper}>
-              <span>
+              <span onClick={() => deleteBasketProduct(id)}>
                 <BsTrash />
                 <BsTrashFill />
               </span>
-              <span>
+              <span
+                onClick={() => {
+                  deleteBasketProduct(id);
+                  setBasket((prev) => prev.filter((el) => el.productid !== id));
+                  toggleFavProduct(id);
+                }}
+              >
                 <AiOutlineHeart />
                 <AiFillHeart />
               </span>
             </div>
-            <div className={styles.price}>{product.price} €</div>
+            <div className={styles.price}>{product?.price} €</div>
           </div>
         </div>
       </div>
@@ -86,12 +95,27 @@ const Product = ({ product, quantity }) => {
   );
 };
 
-const Counter = ({ quantity }) => {
+const Counter = ({ quantity, id }) => {
+  const { addToBasket, removeFromBasket } = useProducts();
   return (
     <span className={styles.quantitywrapper}>
-      <button className={styles.minus}>-</button>
+      <button
+        className={styles.minus}
+        onClick={() => {
+          removeFromBasket(id);
+        }}
+      >
+        -
+      </button>
       <span className={styles.number}>{quantity}</span>
-      <button className={styles.plus}>+</button>
+      <button
+        className={styles.plus}
+        onClick={() => {
+          addToBasket(id);
+        }}
+      >
+        +
+      </button>
     </span>
   );
 };

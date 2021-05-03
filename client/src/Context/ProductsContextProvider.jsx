@@ -8,7 +8,6 @@ import React, {
 import useQuery from "../Hooks/useQuery";
 import { useAuth } from "./AuthContextProvider";
 import { notification } from "antd";
-//import "./antd.css";
 
 export const ProductsContext = createContext();
 
@@ -19,104 +18,148 @@ export const ProductsContextProvider = ({ children }) => {
   const { auth } = useAuth();
   const updateWishlist = useQuery({});
 
-  //adds or removes product from wishlist context
   const toggleFavProduct = useCallback(
     (id) => {
+      let url;
+
       if (wishlist.includes(id)) {
         setWishlist((prev) => prev.filter((productId) => productId !== id));
-        if (auth.isLoggedIn) {
-          updateWishlist.setApiOptions({
-            url: `/api/products/wishlist/${id}/remove`,
-            method: "POST",
-          });
-        }
+        url = `/api/products/wishlist/${id}/remove`;
       } else {
         setWishlist((prev) => [...prev, id]);
-        if (auth.isLoggedIn) {
-          updateWishlist.setApiOptions({
-            url: `/api/products/wishlist/${id}/add`,
-            method: "POST",
-          });
-        }
+        url = `/api/products/wishlist/${id}/add`;
       }
+
+      auth.isLoggedIn &&
+        updateWishlist.setApiOptions({
+          url: url,
+          method: "POST",
+        });
     },
     [wishlist]
   );
 
   const addToBasket = useCallback(async (id) => {
-    const product = basket.find((el) => el.productid === id);
+    const item = basket.find((el) => el.productid === id);
+    const product = products.find((el) => el.id === id);
 
-    if (auth.isLoggedIn) {
-      const res = await fetch(`/api/products/basket/${id}/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ product }),
-      });
+    let body = null;
 
-      if (res.status === 200) {
+    if (item) {
+      if (item.quantity < product.stock) {
+        body = { id, quantity: item.quantity + 1 };
         setBasket((prev) => {
-          if (product) {
-            return prev.map((el) => {
-              if (el.productid === id) {
-                el.stock += 1;
-              }
-              return el;
-            });
-          } else {
-            return [...prev, { productid: id, stock: 1 }];
-          }
+          return prev.map((el) => {
+            if (el.productid === id) {
+              el.quantity += 1;
+            }
+            return el;
+          });
         });
-        notification.success({
-          message: "basket",
-          description: "Product added successfully",
-        });
+        success("added");
       } else {
-        notification.error({
-          message: "basket",
-          description: "Stock exceeded",
-        });
+        failed();
       }
     } else {
-      const res = await fetch(`/api/products/basket/${id}/check`, {
+      body = { id, quantity: 1 };
+      setBasket((prev) => [...prev, { productid: id, quantity: 1 }]);
+      success("added");
+    }
+
+    auth.isLoggedIn &&
+      body &&
+      (await fetch(`/api/products/basket/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ product }),
-      });
-
-      if (res.status === 200) {
-        setBasket((prev) => {
-          if (product) {
-            return prev.map((el) => {
-              if (el.productid === id) {
-                el.stock += 1;
-              }
-              return el;
-            });
-          } else {
-            return [...prev, { productid: id, stock: 1 }];
-          }
-        });
-        notification.success({
-          message: "basket",
-          description: "Product added successfully",
-        });
-      } else {
-        notification.error({
-          message: "basket",
-          description: "Stock exceeded",
-        });
-      }
-    }
+        body: JSON.stringify(body),
+      }));
   });
 
-  useProductQuery(setProducts);
-  useWishlistQuery(auth, setWishlist);
+  const removeFromBasket = useCallback(async (id) => {
+    const item = basket.find((el) => el.productid === id);
+    const product = products.find((el) => el.id === id);
+
+    let body = null;
+
+    if (item) {
+      if (item.quantity > 1) {
+        body = { id, quantity: item.quantity - 1 };
+        setBasket((prev) => {
+          return prev.map((el) => {
+            if (el.productid === id) {
+              el.quantity -= 1;
+            }
+            return el;
+          });
+        });
+        success("removed");
+      } else {
+        body = { id, quantity: 0 };
+        const newBasket = basket.filter((product) => product.productid !== id);
+        console.log(newBasket);
+        setBasket(newBasket);
+        success("removed");
+      }
+    }
+
+    auth.isLoggedIn &&
+      body &&
+      (await fetch(`/api/products/basket/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      }));
+  });
+
+  const deleteBasketProduct = useCallback(async (id) => {
+    const item = basket.find((el) => el.productid === id);
+    const product = products.find((el) => el.id === id);
+
+    let body = null;
+
+    if (item) {
+      body = { id, quantity: 0 };
+      const newBasket = basket.filter((product) => product.productid !== id);
+      setBasket(newBasket);
+      success("removed");
+    }
+
+    auth.isLoggedIn &&
+      body &&
+      (await fetch(`/api/products/basket/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      }));
+  });
+
+  const success = (msg) => {
+    return notification.success({
+      message: "basket",
+      description: "item " + msg + " successfully",
+      placement: "topLeft",
+    });
+  };
+
+  const failed = () => {
+    return notification.error({
+      message: "basket",
+      description: "Stock exceeded",
+      placement: "topLeft",
+    });
+  };
+
+  useProductQuery(setProducts, products, wishlist, setWishlist);
+  useWishlistQuery(auth, setWishlist, wishlist, products);
   useBasketQuery(auth, setBasket);
 
   useEffect(() => {
@@ -125,10 +168,18 @@ export const ProductsContextProvider = ({ children }) => {
       localStorage.setItem("basket", JSON.stringify(basket));
     }
   }, [wishlist, basket]);
-
   return (
     <ProductsContext.Provider
-      value={{ products, wishlist, toggleFavProduct, addToBasket, basket }}
+      value={{
+        products,
+        wishlist,
+        toggleFavProduct,
+        addToBasket,
+        basket,
+        setBasket,
+        removeFromBasket,
+        deleteBasketProduct,
+      }}
     >
       {children}
     </ProductsContext.Provider>
@@ -143,7 +194,7 @@ export const useProducts = () => {
 };
 
 //get the products data in first render
-const useProductQuery = (setProducts) => {
+const useProductQuery = (setProducts, products, wishlist, setWishlist) => {
   const productsQuery = useQuery({
     url: "/api/products/all",
     method: "GET",
@@ -154,11 +205,20 @@ const useProductQuery = (setProducts) => {
       setProducts(productsQuery.data.response);
     }
   }, [productsQuery.loading]);
+
+  useEffect(() => {
+    const wish = products
+      .filter((el) => {
+        if (wishlist.includes(el.id)) return true;
+        return false;
+      })
+      .map((el) => el.id);
+    setWishlist(wish);
+  }, [products]);
 };
 
 const useWishlistQuery = (auth, setWishlist) => {
   const wishlistQuery = useQuery({});
-
   //every time auth changes we get the appropiate wishlisted products
   useEffect(() => {
     if (auth.isLoggedIn) {
@@ -168,6 +228,7 @@ const useWishlistQuery = (auth, setWishlist) => {
       });
     } else {
       const lc = localStorage.getItem("wishlist");
+
       if (lc) {
         setWishlist(JSON.parse(lc));
       } else {

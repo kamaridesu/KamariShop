@@ -5,7 +5,7 @@ import styles from "./Wishlist.Module.scss";
 import logo from "../../Images/wishlist.png";
 
 export const Wishlist = () => {
-  const { products, wishlist, toggleFavProduct } = useProducts();
+  const { products, wishlist, toggleFavProduct, addToBasket } = useProducts();
   return (
     <div className={styles.container}>
       {wishlist.length === 0 ? (
@@ -20,13 +20,7 @@ export const Wishlist = () => {
           </p>
           {products.map((product) => {
             if (wishlist.includes(product.id)) {
-              return (
-                <Product
-                  product={product}
-                  toggleFavProduct={toggleFavProduct}
-                  key={product.id}
-                />
-              );
+              return <Product product={product} key={product.id} />;
             }
           })}
         </>
@@ -35,7 +29,9 @@ export const Wishlist = () => {
   );
 };
 
-const Product = ({ product, toggleFavProduct }) => {
+const Product = ({ product }) => {
+  const { toggleFavProduct, addToBasket } = useProducts();
+
   return (
     <div className={styles.product}>
       <div className={styles.imagewrapper}>
@@ -58,7 +54,12 @@ const Product = ({ product, toggleFavProduct }) => {
                 <BsTrash />
                 <BsTrashFill />
               </span>
-              <span>
+              <span
+                onClick={() => {
+                  toggleFavProduct(product.id);
+                  addToBasket(product.id);
+                }}
+              >
                 <BsBag />
                 <BsBagFill />
               </span>

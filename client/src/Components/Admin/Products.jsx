@@ -95,7 +95,7 @@ const Product = ({ products, deleteProduct }) => {
             </div>
             <div>
               <p>{el.price}€</p>
-              <p>{el.quantity} units</p>
+              <p>{el.stock} units</p>
             </div>
           </div>
         </Link>

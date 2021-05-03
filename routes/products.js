@@ -10,7 +10,7 @@ router.get("/all", async (req, res) => {
     // if (req.user === null || req.user.role !== "admin") {
     //   return res.status(401).json();
     // }
-    const response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image) 
+    const response = await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image) 
         as images 
         from product 
         inner join images 
@@ -41,7 +41,7 @@ router.get("/product/:id", async (req, res) => {
 
     let response;
     try {
-      response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image)
+      response = await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image)
         as images
         from product
         inner join images
@@ -117,7 +117,7 @@ router.get("/wishlisted", auth, async (req, res) => {
       return res.status(401).json({});
     }
 
-    const response = await sql`SELECT productid FROM wishlist WHERE userid = ${req.user.id}`;
+    const response = await sql`SELECT * FROM wishlist join product on product.id = productid WHERE userid = ${req.user.id}`;
 
     if (!response.count) {
       return res.json({ response: [] });
@@ -137,7 +137,7 @@ router.get("/basket", auth, async (req, res) => {
     }
 
     const response = await sql`
-    SELECT productid, basket.quantity, product.quantity as stock FROM basket 
+    SELECT productid, basket.quantity, product.stock FROM basket 
     join product on product.id = productid
     WHERE userid = ${req.user.id}`;
 
@@ -152,51 +152,41 @@ router.get("/basket", auth, async (req, res) => {
   }
 });
 
-router.post("/basket/:id/:operation/", auth, async (req, res) => {
+router.post("/basket/:operation/", auth, async (req, res) => {
   try {
-    if (req.params.operation === "add") {
-      if (req.user === null) {
-        return res.status(401).json({});
-      }
-
-      const row = {
-        userid: req.user.id,
-        productid: req.params.id,
-        quantity: req.body.product ? req.body.product.quantity + 1 : 1,
-      };
-
-      if (
-        !req.body.product ||
-        req.body.product.quantity < req.body.product.stock
-      ) {
-        await sql`INSERT INTO basket ${sql(
-          row,
-          "userid",
-          "productid",
-          "quantity"
-        )} ON CONFLICT (userid, productid) DO UPDATE SET quantity = ${
-          row.quantity
-        }`;
-
-        return res.json({});
-      } else {
-        return res.status(400).json({});
-      }
-    } else if (req.params.operation === "check") {
-      console.log(req.body.product);
-      if (
-        !req.body.product ||
-        req.body.product.quantity < req.body.product.stock
-      ) {
-        return res.json({});
-      } else {
-        return res.status(400).json({});
-      }
-    } else {
-      await sql`DELETE FROM wishlist WHERE userid = ${row.userid} AND productid = ${row.productid}`;
+    if (req.user === null) {
+      return res.status(401).json({});
     }
 
-    return res.json({});
+    const row = {
+      userid: req.user.id,
+      productid: req.body.id,
+      quantity: req.body.quantity,
+    };
+
+    if (req.params.operation === "add") {
+      await sql`INSERT INTO basket ${sql(
+        row,
+        "userid",
+        "productid",
+        "quantity"
+      )} ON CONFLICT (userid, productid) DO UPDATE SET quantity = ${
+        row.quantity
+      }`;
+
+      return res.json({});
+    } else if (req.params.operation === "remove") {
+      if (row.quantity !== 0) {
+        await sql`UPDATE basket SET ${sql(row, "quantity")} WHERE userid = ${
+          row.userid
+        } and productid = ${row.productid}`;
+      } else {
+        await sql`DELETE FROM basket WHERE userid = ${row.userid} and productid = ${row.productid}`;
+      }
+      return res.json({});
+    }
+
+    return res.status(400).json({});
   } catch (error) {
     console.log(error);
     return res.status(500).send();
@@ -244,11 +234,11 @@ const isProductValid = (req, res) => {
     return false;
   }
 
-  const { name, price, description, quantity, color, gender } = req.body;
+  const { name, price, description, stock, color, gender } = req.body;
 
   let { files } = req.files;
 
-  if (!name || !price || !description || !quantity || !color || !gender) {
+  if (!name || !price || !description || !stock || !color || !gender) {
     res.status(400).send({ msg: "Please fill and select all the fields" });
 
     return false;
@@ -258,7 +248,7 @@ const isProductValid = (req, res) => {
 };
 
 const createProductTransaction = async (req) => {
-  const { name, price, description, quantity, color, gender } = req.body;
+  const { name, price, description, stock, color, gender } = req.body;
 
   let { files } = req.files;
 
@@ -271,7 +261,7 @@ const createProductTransaction = async (req) => {
       req.body,
       "name",
       "price",
-      "quantity",
+      "stock",
       "gender",
       "color",
       "description"
@@ -299,7 +289,7 @@ const createProductTransaction = async (req) => {
 };
 
 const updateProductTransaction = async (req) => {
-  const { id, name, price, description, quantity, color, gender } = req.body;
+  const { id, name, price, description, stock, color, gender } = req.body;
 
   let { files } = req.files;
 
@@ -312,7 +302,7 @@ const updateProductTransaction = async (req) => {
       req.body,
       "name",
       "price",
-      "quantity",
+      "stock",
       "gender",
       "color",
       "description"
@@ -350,7 +340,7 @@ const deleteProductTransaction = async (product, res) => {
       product.id
     }`;
 
-    const response = await sql`select id, name, price, quantity, gender, color, description, isdeleted, array_agg(images.image) 
+    const response = await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image) 
         as images 
         from product 
         inner join images 

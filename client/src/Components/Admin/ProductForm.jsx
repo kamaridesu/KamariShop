@@ -14,7 +14,7 @@ export const ProductForm = () => {
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
   const [index, setIndex] = useState(0);
-  const [quantity, setQuantity] = useState("");
+  const [stock, setStock] = useState("");
   const [color, setColor] = useState("");
   const [gender, setGender] = useState("");
   const [message, setMessage] = useState({ msg: "", status: null });
@@ -38,7 +38,7 @@ export const ProductForm = () => {
       setName(data[0].name);
       setPrice(data[0].price);
       setDescription(data[0].description);
-      setQuantity(data[0].quantity);
+      setStock(data[0].stock);
       setGender(data[0].gender);
       setColor(data[0].color);
       data[0].images.forEach((url) => {
@@ -70,7 +70,7 @@ export const ProductForm = () => {
     formData.append("name", name);
     formData.append("price", price);
     formData.append("description", description);
-    formData.append("quantity", quantity);
+    formData.append("stock", stock);
     formData.append("color", color);
     formData.append("gender", gender);
 
@@ -149,12 +149,12 @@ export const ProductForm = () => {
             />
           </div>
           <div>
-            <label>Quantity</label>
+            <label>stock</label>
             <input
               type="number"
               min="0"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
             />
           </div>
           <div>
