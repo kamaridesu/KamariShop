@@ -137,7 +137,7 @@ router.get("/basket", auth, async (req, res) => {
     }
 
     const response = await sql`
-    SELECT productid, basket.quantity, product.stock FROM basket 
+    SELECT productid, basket.quantity FROM basket 
     join product on product.id = productid
     WHERE userid = ${req.user.id}`;
 

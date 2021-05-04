@@ -3,10 +3,21 @@ import styles from "./Basket.Module.scss";
 import logo from "../../Images/emptybasket.svg";
 import { useProducts } from "../../Context/ProductsContextProvider";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { BsFilter, BsTrash, BsTrashFill } from "react-icons/bs";
+import { BsTrash, BsTrashFill } from "react-icons/bs";
 
 export const Basket = () => {
   const { products, basket } = useProducts();
+
+  const total = () => {
+    let total = 0;
+
+    basket.forEach((item) => {
+      const product = products.find((el) => el.id === item.productid);
+      total += item.quantity * product.price;
+    });
+
+    return total;
+  };
 
   return (
     <div className={styles.container}>
@@ -38,7 +49,7 @@ export const Basket = () => {
           <div className={styles.bottom}>
             <div className={styles.totalprice}>
               <p className={styles.total}>TOTAL</p>
-              <p className={styles.price}>1.200,89€</p>
+              <p className={styles.price}>{total()}€</p>
             </div>
             <button className={styles.button}>PROCESS ORDER</button>
           </div>
@@ -119,5 +130,3 @@ const Counter = ({ quantity, id }) => {
     </span>
   );
 };
-
-const total = () => {};
