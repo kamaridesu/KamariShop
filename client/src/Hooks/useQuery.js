@@ -16,7 +16,7 @@ const useQuery = ({ url = null, method = null, body = null }) => {
       const options = getOptions(apiOptions.method, apiOptions.body);
 
       const response = await fetch(apiOptions.url, options);
-      if (response.status > 401) {
+      if (response.status >= 401) {
         return void history.replace(history.location.pathname, {
           errorStatusCode: response.status,
         });

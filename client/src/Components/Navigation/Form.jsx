@@ -4,7 +4,7 @@ import { FormMsg } from "../../Errors/FormMsg";
 import useQuery from "../../Hooks/useQuery";
 import styles from "./Form.Module.scss";
 
-export const Form = ({ setShowResetForm }) => {
+export const Form = ({ setShowForgotForm }) => {
   const [state, setstate] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,7 +65,7 @@ export const Form = ({ setShowResetForm }) => {
           />
         </div>
       </div>
-      <div className={styles.forgot} onClick={() => setShowResetForm(true)}>
+      <div className={styles.forgot} onClick={() => setShowForgotForm(true)}>
         Reset my password
       </div>
       <div className={styles.bottomSection}>

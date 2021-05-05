@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "../Navigation/Nav.Module.scss";
 import logo from "../../Images/KamariLogo120.png";
 import { AiFillShopping, AiFillHeart } from "react-icons/ai";
@@ -10,7 +10,7 @@ import { Wishlist } from "./Wishlist";
 import { useAuth } from "../../Context/AuthContextProvider";
 import { UserMenu } from "./UserMenu";
 import { Form } from "./Form";
-import { ResetForm } from "./ResetForm";
+import { ForgotForm } from "./ForgotForm";
 
 export const Nav = (props) => {
   return (
@@ -50,16 +50,16 @@ export const Nav = (props) => {
 
 const UserNavMenu = ({ close }) => {
   const { auth } = useAuth();
-  const [showResetForm, setShowResetForm] = useState(false);
+  const [showForgotForm, setShowForgotForm] = useState(false);
 
   return (
     <>
       {auth.isLoggedIn ? (
         <UserMenu close={close} />
-      ) : !showResetForm ? (
-        <Form setShowResetForm={setShowResetForm} />
+      ) : !showForgotForm ? (
+        <Form setShowForgotForm={setShowForgotForm} />
       ) : (
-        <ResetForm setShowResetForm={setShowResetForm} close={close} />
+        <ForgotForm setShowForgotForm={setShowForgotForm} close={close} />
       )}
     </>
   );

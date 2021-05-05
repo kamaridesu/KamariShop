@@ -9,6 +9,7 @@ import { ErrorHandler } from "../Errors/ErrorHandler";
 import { ProductForm } from "../Components/Admin/ProductForm";
 import { ProductsScreen } from "../Components/Main/ProductsScreen";
 import { ProductScreen } from "../Components/Main/ProductScreen";
+import { ResetForm } from "../Components/Main/ResetForm";
 
 export const Router = () => {
   return (
@@ -36,6 +37,9 @@ export const Router = () => {
           component={ProductForm}
           roles={["admin"]}
         />
+        <Route path="/resetpassword/:id/:token">
+          <ResetForm />
+        </Route>
         <Route>
           <ErrorPage errorCode={404} message={"Not Found"} />;
         </Route>

@@ -1,11 +1,24 @@
 import React, { useState } from "react";
 import { AiOutlineClose, AiOutlineLeft } from "react-icons/ai";
-import { FormMsg } from "../../Errors/FormMsg";
-import styles from "./ResetForm.module.scss";
+import styles from "./ForgotForm.Module.scss";
 import logo from "../../Images/emailsent.svg";
 
-export const ResetForm = ({ setShowResetForm, close }) => {
-  return false ? (
+export const ForgotForm = ({ setShowResetForm, close }) => {
+  const [sent, setSent] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const sendEmail = () => {
+    fetch("/api/users/forgot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+  };
+
+  return !sent ? (
     <div className={styles.container}>
       <div className={styles.header}>
         <AiOutlineLeft onClick={() => setShowResetForm(false)} />
@@ -15,8 +28,19 @@ export const ResetForm = ({ setShowResetForm, close }) => {
         If you forgot your password, please enter your e-mail and we will send
         you instructions to reset it.
       </p>
-      <input type="email" />
-      <button>RESET PASSWORD</button>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <button
+        onClick={() => {
+          sendEmail();
+          setSent(true);
+        }}
+      >
+        RESET PASSWORD
+      </button>
     </div>
   ) : (
     <div className={styles.container}>
