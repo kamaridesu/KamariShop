@@ -91,7 +91,7 @@ export const ProductForm = () => {
   };
 
   return (
-    <div>
+    <div style={{ minHeight: "92vh" }}>
       <div className={styles.msg}>
         {message.msg && (
           <FormMsg msg={message} clear={() => setMessage({ msg: null })} />
