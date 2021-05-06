@@ -1,3 +1,4 @@
+import { Footer } from "../Footer/Footer";
 import { Nav } from "./Nav";
 
 export const withNavigation = (Component, props) => {
@@ -5,6 +6,7 @@ export const withNavigation = (Component, props) => {
     <>
       <Nav />
       <Component {...props} />
+      <Footer />
     </>
   );
 };

@@ -36,7 +36,7 @@ export const Products = () => {
   }, [loading]);
 
   return (
-    <>
+    <div style={{ minHeight: "92vh" }}>
       {products.length === 0 ? (
         <div className={styles.empty}>
           <div>
@@ -64,7 +64,7 @@ export const Products = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

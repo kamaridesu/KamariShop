@@ -181,10 +181,6 @@ router.post("/reset", async (req, res) => {
       return res.status(401).json({});
     }
 
-    if (!password) {
-      return res.status(400).json({ msg: "Please enter a password." });
-    }
-
     const secret = process.env.ACCESS_TOKEN_SECRET + response.password;
 
     try {
@@ -193,13 +189,15 @@ router.post("/reset", async (req, res) => {
       return res.status(400).json({ msg: "Your reset link has expired" });
     }
 
+    if (!password) {
+      return res.status(400).json({ msg: "Please enter a password." });
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = {
       password: passwordHash,
     };
-
-    console.log(sql(user));
 
     await sql`UPDATE users SET ${sql(user)} where id = ${id}`;
 

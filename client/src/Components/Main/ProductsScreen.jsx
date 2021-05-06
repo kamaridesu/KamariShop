@@ -28,34 +28,36 @@ export const ProductsScreen = () => {
   }, [products, gender, price, order, color]);
 
   return (
-    <div className={styles.productScreen}>
-      <div className={styles.header}>
-        <span>({filteredProducts.length} articles)</span>
-        <IconButton
-          Icon={Icon}
-          ModalContent={FilterModal}
-          color={color}
-          setColor={setColor}
-          setOrder={setOrder}
-          order={order}
-          price={price}
-          setPrice={setPrice}
-          gender={gender}
-          setFilteredProducts={setFilteredProducts}
-          filteredProducts={filteredProducts.length}
-        />
+    <div className={styles.main}>
+      <div className={styles.productScreen}>
+        <div className={styles.header}>
+          <span>({filteredProducts.length} articles)</span>
+          <IconButton
+            Icon={Icon}
+            ModalContent={FilterModal}
+            color={color}
+            setColor={setColor}
+            setOrder={setOrder}
+            order={order}
+            price={price}
+            setPrice={setPrice}
+            gender={gender}
+            setFilteredProducts={setFilteredProducts}
+            filteredProducts={filteredProducts.length}
+          />
+        </div>
+        {filteredProducts.length === 0 ? (
+          <div className={styles.empty}>
+            <img src={logo} alt="" />
+            <p className={styles.top}>There are no results</p>
+            <p>Try selection other filters</p>
+          </div>
+        ) : (
+          <div className={styles.cardsWrapper}>
+            <Product gender={gender} filteredProducts={filteredProducts} />
+          </div>
+        )}
       </div>
-      {filteredProducts.length === 0 ? (
-        <div className={styles.empty}>
-          <img src={logo} alt="" />
-          <p className={styles.top}>There are no results</p>
-          <p>Try selection other filters</p>
-        </div>
-      ) : (
-        <div className={styles.cardsWrapper}>
-          <Product gender={gender} filteredProducts={filteredProducts} />
-        </div>
-      )}
     </div>
   );
 };

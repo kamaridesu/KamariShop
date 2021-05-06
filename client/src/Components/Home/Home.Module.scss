@@ -1,0 +1,64 @@
+.home {
+  display: grid;
+  grid-gap: 1rem;
+  margin: 5px 0;
+  > .videowrapper {
+    padding: 2px;
+    max-height: 80vh;
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .newman,
+  .newwomen {
+    display: grid;
+    grid-gap: 1rem;
+    p {
+      text-align: center;
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: 4px;
+    }
+
+    > .products {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 5px;
+      padding: 2px;
+      > .product {
+        > .imagewrapper {
+          > img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .home {
+    grid-gap: 1.5rem;
+    margin: 1rem;
+
+    .videowrapper {
+      padding: 0;
+    }
+
+    .newman,
+    .newwomen {
+      grid-gap: 1.5rem;
+      .products {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr 1fr !important;
+        grid-gap: 1rem !important;
+        padding: 0 2rem !important;
+      }
+    }
+  }
+}

@@ -31,14 +31,16 @@ export const ResetForm = () => {
           {message.msg && (
             <FormMsg msg={message} clear={() => setMessage({ msg: null })} />
           )}
-          <span>Enter new password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {message.status !== 200 && (
-            <button onClick={() => changePassword()}>Submit</button>
+          {status !== 200 && (
+            <>
+              <span>Enter new password</span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button onClick={() => changePassword()}>Submit</button>
+            </>
           )}
         </div>
         <Link className={styles.button} to="/">
