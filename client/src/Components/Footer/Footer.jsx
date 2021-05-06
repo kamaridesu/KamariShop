@@ -38,11 +38,11 @@ export const Footer = () => {
         </p>
       </div>
       <div className={styles.bottom}>
-        <div className={styles.name}>Ahmed</div>
+        <div className={styles.name}>Kamari</div>
         <div className={styles.imagewrapper}>
           <img src={logo} alt="" />
         </div>
-        <div className={styles.lastname}>Alkamari</div>
+        <div className={styles.lastname}>desu :)</div>
       </div>
     </footer>
   );

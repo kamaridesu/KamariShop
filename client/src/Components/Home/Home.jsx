@@ -18,20 +18,19 @@ export const Home = () => {
         <div className={styles.products}>
           {products
             .sort(() => 0.5 - Math.random())
-            .slice(0, 5)
+            .filter((el) => el.gender === "man")
+            .slice(0, 4)
             .map((product) => {
-              if (product.gender === "man") {
-                return (
-                  <div className={styles.product} key={product.id}>
-                    <Link
-                      to={`/hats/${product.gender}/${product.id}`}
-                      className={styles.imagewrapper}
-                    >
-                      <img src={product.images[0]} alt="" />
-                    </Link>
-                  </div>
-                );
-              }
+              return (
+                <div className={styles.product} key={product.id}>
+                  <Link
+                    to={`/hats/${product.gender}/${product.id}`}
+                    className={styles.imagewrapper}
+                  >
+                    <img src={product.images[0]} alt="" />
+                  </Link>
+                </div>
+              );
             })}
         </div>
       </div>
@@ -43,20 +42,19 @@ export const Home = () => {
         <div className={styles.products}>
           {products
             .sort(() => 0.5 - Math.random())
-            .slice(0, 5)
+            .filter((el) => el.gender === "women")
+            .slice(0, 4)
             .map((product) => {
-              if (product.gender === "women") {
-                return (
-                  <div className={styles.product} key={product.id}>
-                    <Link
-                      to={`/hats/${product.gender}/${product.id}`}
-                      className={styles.imagewrapper}
-                    >
-                      <img src={product.images[0]} alt="" />
-                    </Link>
-                  </div>
-                );
-              }
+              return (
+                <div className={styles.product} key={product.id}>
+                  <Link
+                    to={`/hats/${product.gender}/${product.id}`}
+                    className={styles.imagewrapper}
+                  >
+                    <img src={product.images[0]} alt="" />
+                  </Link>
+                </div>
+              );
             })}
         </div>
       </div>
