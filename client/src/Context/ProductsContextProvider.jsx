@@ -80,7 +80,6 @@ export const ProductsContextProvider = ({ children }) => {
 
   const removeFromBasket = useCallback(async (id) => {
     const item = basket.find((el) => el.productid === id);
-    const product = products.find((el) => el.id === id);
 
     let body = null;
 
@@ -99,7 +98,6 @@ export const ProductsContextProvider = ({ children }) => {
       } else {
         body = { id, quantity: 0 };
         const newBasket = basket.filter((product) => product.productid !== id);
-        console.log(newBasket);
         setBasket(newBasket);
         success("removed");
       }

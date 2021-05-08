@@ -17,18 +17,6 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const body = req.body;
 
-    if (!email && !password) {
-      return res.status(400).json({ msg: "Please enter all required fields." });
-    }
-
-    if (!email) {
-      return res.status(400).json({ msg: "Please enter a email." });
-    }
-
-    if (!password) {
-      return res.status(400).json({ msg: "Please enter a password." });
-    }
-
     let response = await sql`select * from users WHERE email = ${body.email}`;
 
     if (!response.count) {
@@ -79,18 +67,6 @@ router.post("/register", async (req, res) => {
     const { email, password } = req.body;
     const body = req.body;
 
-    if (!email && !password) {
-      return res.status(400).json({ msg: "Please enter all required fields." });
-    }
-
-    if (!email) {
-      return res.status(400).json({ msg: "Please enter a email." });
-    }
-
-    if (!password) {
-      return res.status(400).json({ msg: "Please enter a password." });
-    }
-
     let response = await sql`select * from users WHERE email = ${body.email}`;
 
     if (response.count) {
@@ -139,6 +115,7 @@ router.post("/forgot", async (req, res) => {
         id: query[0].id,
       };
 
+      console.log(req);
       const token = jwt.sign(payload, secret, { expiresIn: "1m" });
       const link = `http://${req.headers["x-forwarded-host"]}/resetpassword/${query[0].id}/${token}`;
 
@@ -187,10 +164,6 @@ router.post("/reset", async (req, res) => {
       jwt.verify(token, secret);
     } catch (error) {
       return res.status(400).json({ msg: "Your reset link has expired" });
-    }
-
-    if (!password) {
-      return res.status(400).json({ msg: "Please enter a password." });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);

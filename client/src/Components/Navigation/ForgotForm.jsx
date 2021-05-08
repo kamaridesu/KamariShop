@@ -3,44 +3,66 @@ import { AiOutlineClose, AiOutlineLeft } from "react-icons/ai";
 import styles from "./ForgotForm.Module.scss";
 import logo from "../../Images/emailsent.svg";
 
-export const ForgotForm = ({ setShowResetForm, close }) => {
+export const ForgotForm = ({ setShowForgotForm, close }) => {
   const [sent, setSent] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const validate = () => {
+    let emailError = "";
+
+    if (!email) {
+      emailError = "Email cannot be blank";
+    }
+
+    if (email && !email.includes("@")) {
+      emailError = "Invalid email";
+    }
+
+    if (emailError) {
+      setEmailError(emailError);
+      return false;
+    }
+
+    return true;
+  };
 
   const sendEmail = () => {
-    fetch("/api/users/forgot", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email }),
-    });
+    if (validate()) {
+      setSent(true);
+      fetch("/api/users/forgot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email }),
+      });
+    }
   };
 
   return !sent ? (
     <div className={styles.container}>
       <div className={styles.header}>
-        <AiOutlineLeft onClick={() => setShowResetForm(false)} />
+        <AiOutlineLeft onClick={() => setShowForgotForm(false)} />
         <p>UPDATE PASSWORD</p> <AiOutlineClose onClick={close} />
       </div>
       <p className={styles.text}>
         If you forgot your password, please enter your e-mail and we will send
         you instructions to reset it.
       </p>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <button
-        onClick={() => {
-          sendEmail();
-          setSent(true);
-        }}
-      >
-        RESET PASSWORD
-      </button>
+      <div className={styles.inputwrapper}>
+        <input
+          style={{
+            borderBottom: emailError ? "1px solid red" : "",
+          }}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <div className={styles.error}>{emailError}</div>
+      </div>
+      <button onClick={() => sendEmail()}>RESET PASSWORD</button>
     </div>
   ) : (
     <div className={styles.container}>

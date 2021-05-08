@@ -8,23 +8,62 @@ export const Form = ({ setShowForgotForm }) => {
   const [state, setstate] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const { data, status, loading, setApiOptions } = useQuery({});
   const [message, setMessage] = useState({ msg: "", status: null });
   const { setAuth } = useAuth();
 
+  const validate = () => {
+    let emailError = "";
+    let passwordError = "";
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!email) {
+      emailError = "Email cannot be blank";
+    }
+
+    if (email && !email.includes("@")) {
+      emailError = "Invalid email";
+    }
+
+    if (!password) {
+      passwordError = "Password cannot be blank";
+    }
+
+    if (password && !password.match(passwordPattern) && !state) {
+      passwordError =
+        "You must include at least 8 characters, including upper and lowercase letters, one number and a special character";
+    }
+
+    if (emailError || passwordError) {
+      setEmailError(emailError);
+      setPasswordError(passwordError);
+      return false;
+    }
+
+    return true;
+  };
+
   const handleForm = () => {
-    if (state) {
-      setApiOptions({
-        url: "/api/users/login",
-        method: "POST",
-        body: { email, password },
-      });
-    } else {
-      setApiOptions({
-        url: "/api/users/register",
-        method: "POST",
-        body: { email, password },
-      });
+    setEmailError("");
+    setPasswordError("");
+    setMessage({ msg: null });
+
+    if (validate()) {
+      if (state) {
+        setApiOptions({
+          url: "/api/users/login",
+          method: "POST",
+          body: { email, password },
+        });
+      } else {
+        setApiOptions({
+          url: "/api/users/register",
+          method: "POST",
+          body: { email, password },
+        });
+      }
     }
   };
 
@@ -32,10 +71,10 @@ export const Form = ({ setShowForgotForm }) => {
     if (loading === false) {
       if (status === 200) {
         setAuth({ ...data });
+        setEmail("");
+        setPassword("");
       }
       setMessage({ msg: data.msg, status: status });
-      setEmail("");
-      setPassword("");
     }
   }, [loading, data]);
 
@@ -51,18 +90,26 @@ export const Form = ({ setShowForgotForm }) => {
         <div>
           <label>Email</label>
           <input
+            style={{
+              borderBottom: emailError ? "1px solid red" : "",
+            }}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <div className={styles.error}>{emailError}</div>
         </div>
         <div>
           <label>Password</label>
           <input
+            style={{
+              borderBottom: passwordError ? "1px solid red" : "",
+            }}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <div className={styles.error}>{passwordError}</div>
         </div>
       </div>
       <div className={styles.forgot} onClick={() => setShowForgotForm(true)}>
@@ -75,8 +122,11 @@ export const Form = ({ setShowForgotForm }) => {
         <button
           onClick={() => {
             setstate((e) => !e);
+            setMessage({ msg: null });
             setEmail("");
             setPassword("");
+            setEmailError("");
+            setPasswordError("");
           }}
         >
           {state ? "REGISTER" : "LOGIN"}

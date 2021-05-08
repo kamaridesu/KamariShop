@@ -13,21 +13,21 @@ export const Footer = () => {
   return (
     <footer className={styles.footer}>
       <ul className={styles.list}>
-        <li>
+        <a href="https://www.facebook.com" target="_blank" rel="noreferrer">
           <AiFillFacebook />
-        </li>
-        <li>
+        </a>
+        <a href="https://www.twitter.com" target="_blank" rel="noreferrer">
           <AiOutlineTwitter />
-        </li>
-        <li>
+        </a>
+        <a href="https://www.instagram.com" target="_blank" rel="noreferrer">
           <AiOutlineInstagram />
-        </li>
-        <li>
+        </a>
+        <a href="https://www.youtube.com" target="_blank" rel="noreferrer">
           <AiFillYoutube />
-        </li>
-        <li>
+        </a>
+        <a href="https://www.reddit.com" target="_blank" rel="noreferrer">
           <AiFillRedditCircle />
-        </li>
+        </a>
       </ul>
       <div className={styles.middle}>
         <p className={styles.text}>

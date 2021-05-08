@@ -5,7 +5,7 @@ import styles from "./Wishlist.Module.scss";
 import logo from "../../Images/wishlist.png";
 
 export const Wishlist = () => {
-  const { products, wishlist, toggleFavProduct, addToBasket } = useProducts();
+  const { products, wishlist } = useProducts();
   return (
     <div className={styles.container}>
       {wishlist.length === 0 ? (

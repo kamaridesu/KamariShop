@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 
 export const UserMenu = ({ close }) => {
   const { auth, setAuth } = useAuth();
-  const { data, loading, setApiOptions } = useQuery({});
+  const { loading, setApiOptions } = useQuery({});
   const history = useHistory();
 
   const logOut = () => {

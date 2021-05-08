@@ -15,9 +15,12 @@
     margin: auto;
     grid-gap: 30px;
 
-    svg {
-      height: 20px;
-      width: auto;
+    a {
+      color: black;
+      svg {
+        height: 20px;
+        width: auto;
+      }
     }
   }
 
