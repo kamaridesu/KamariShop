@@ -10,12 +10,14 @@ import { ProductForm } from "../Components/Admin/ProductForm";
 import { ProductsScreen } from "../Components/Main/ProductsScreen";
 import { ProductScreen } from "../Components/Main/ProductScreen";
 import { ResetForm } from "../Components/Main/ResetForm";
+import { ProfileForm } from "../Components/Main/ProfileForm";
 
 export const Router = () => {
   return (
     <ErrorHandler>
       <Switch>
         <PublicRoute exact path="/" component={Home} />
+        <PublicRoute exact path="/profile" component={ProfileForm} />
         <PublicRoute exact path="/hats/:gender" component={ProductsScreen} />
         <PublicRoute exact path="/hats/:gender" component={ProductsScreen} />
         <PublicRoute exact path="/hats/:gender/:id" component={ProductScreen} />

@@ -32,12 +32,20 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "Wrong username or password." });
     }
 
+    console.log(response);
     const token = jwt.sign(
       {
         user: {
           id: response[0].id,
           email: response[0].email,
           role: response[0].role,
+          name: response[0].name,
+          surnames: response[0].surnames,
+          address: response[0].address,
+          phone: response[0].phone,
+          postcode: response[0].postcode,
+          city: response[0].city,
+          district: response[0].district,
         },
         isLoggedIn: true,
       },
@@ -53,6 +61,13 @@ router.post("/login", async (req, res) => {
           id: response[0].id,
           email: response[0].email,
           role: response[0].role,
+          name: response[0].name,
+          surnames: response[0].surnames,
+          address: response[0].address,
+          phone: response[0].phone,
+          postcode: response[0].postcode,
+          city: response[0].city,
+          district: response[0].district,
         },
         isLoggedIn: true,
       });
@@ -115,7 +130,6 @@ router.post("/forgot", async (req, res) => {
         id: query[0].id,
       };
 
-      console.log(req);
       const token = jwt.sign(payload, secret, { expiresIn: "1m" });
       const link = `http://${req.headers["x-forwarded-host"]}/resetpassword/${query[0].id}/${token}`;
 
@@ -175,6 +189,65 @@ router.post("/reset", async (req, res) => {
     await sql`UPDATE users SET ${sql(user)} where id = ${id}`;
 
     return res.json({ msg: "Your password has been updated succesfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+router.post("/updateprofile", auth, async (req, res) => {
+  try {
+    if (req.user === null) return res.json({});
+
+    if (!req.body.email) delete req.body.email;
+
+    if (!req.body.password) delete req.body.password;
+
+    await sql.begin(async (sql) => {
+      const update = await sql`UPDATE users set ${sql(req.body)} WHERE id = ${
+        req.user.id
+      } RETURNING *`;
+      console.log(update);
+
+      const token = jwt.sign(
+        {
+          user: {
+            id: update[0].id,
+            email: update[0].email,
+            role: update[0].role,
+            name: update[0].name,
+            surnames: update[0].surnames,
+            address: update[0].address,
+            phone: update[0].phone,
+            postcode: update[0].postcode,
+            city: update[0].city,
+            district: update[0].district,
+          },
+          isLoggedIn: true,
+        },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+
+      return res
+        .cookie("token", token, {
+          httpOnly: true,
+        })
+        .json({
+          user: {
+            id: update[0].id,
+            email: update[0].email,
+            role: update[0].role,
+            name: update[0].name,
+            surnames: update[0].surnames,
+            address: update[0].address,
+            phone: update[0].phone,
+            postcode: update[0].postcode,
+            city: update[0].city,
+            district: update[0].district,
+          },
+          isLoggedIn: true,
+        });
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send();

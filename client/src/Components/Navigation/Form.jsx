@@ -3,6 +3,7 @@ import { useAuth } from "../../Context/AuthContextProvider";
 import { FormMsg } from "../../Errors/FormMsg";
 import useQuery from "../../Hooks/useQuery";
 import styles from "./Form.Module.scss";
+import { Input } from "antd";
 
 export const Form = ({ setShowForgotForm }) => {
   const [state, setstate] = useState(true);
@@ -70,6 +71,7 @@ export const Form = ({ setShowForgotForm }) => {
   useEffect(() => {
     if (loading === false) {
       if (status === 200) {
+        console.log(data);
         setAuth({ ...data });
         setEmail("");
         setPassword("");
@@ -87,25 +89,26 @@ export const Form = ({ setShowForgotForm }) => {
         <FormMsg msg={message} clear={() => setMessage({ msg: null })} />
       )}
       <div className={styles.middleSection}>
-        <div>
+        <div className={styles.inputwrapper}>
           <label>Email</label>
-          <input
-            style={{
-              borderBottom: emailError ? "1px solid red" : "",
-            }}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <span>
+            <input
+              style={{
+                borderBottom: emailError ? "1px solid red" : "",
+              }}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </span>
           <div className={styles.error}>{emailError}</div>
         </div>
-        <div>
+        <div className={styles.inputwrapper}>
           <label>Password</label>
-          <input
+          <Input.Password
             style={{
               borderBottom: passwordError ? "1px solid red" : "",
             }}
-            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />

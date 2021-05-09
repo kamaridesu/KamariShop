@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { FormMsg } from "../../Errors/FormMsg";
 import useQuery from "../../Hooks/useQuery";
 import styles from "./ResetForm.Module.scss";
+import { Input } from "antd";
 
 export const ResetForm = () => {
   const [message, setMessage] = useState({ msg: "", status: null });
@@ -61,14 +62,21 @@ export const ResetForm = () => {
             <>
               <span>Enter new password</span>
               <div className={styles.inputwrapper}>
-                <input
+                <Input.Password
+                  style={{
+                    borderBottom: passwordError ? "1px solid red" : "",
+                  }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {/* <input
                   style={{
                     borderBottom: passwordError ? "1px solid red" : "",
                   }}
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                />
+                /> */}
                 <div className={styles.error}>{passwordError}</div>
               </div>
               <button onClick={() => changePassword()}>Submit</button>
