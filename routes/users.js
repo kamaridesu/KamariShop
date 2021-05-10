@@ -32,7 +32,6 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "Wrong username or password." });
     }
 
-    console.log(response);
     const token = jwt.sign(
       {
         user: {
@@ -207,7 +206,6 @@ router.post("/updateprofile", auth, async (req, res) => {
       const update = await sql`UPDATE users set ${sql(req.body)} WHERE id = ${
         req.user.id
       } RETURNING *`;
-      console.log(update);
 
       const token = jwt.sign(
         {
@@ -248,6 +246,19 @@ router.post("/updateprofile", auth, async (req, res) => {
           isLoggedIn: true,
         });
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+router.get("/delete", auth, async (req, res) => {
+  try {
+    if (req.user === null) return res.json({});
+
+    await sql`delete from users where id = ${req.user.id}`;
+
+    return res.json({});
   } catch (error) {
     console.log(error);
     return res.status(500).send();

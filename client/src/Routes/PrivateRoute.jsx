@@ -3,7 +3,7 @@ import { useAuth } from "../Context/AuthContextProvider";
 import { withNavigation } from "../Components/Navigation/withNavigation";
 import { useHistory } from "react-router";
 
-export const AdminRoute = ({ component: Component, roles, ...rest }) => {
+export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
   const { auth } = useAuth();
   const history = useHistory();
   if (auth.loading) {
@@ -30,4 +30,4 @@ export const AdminRoute = ({ component: Component, roles, ...rest }) => {
   );
 };
 
-export default (props) => withNavigation(AdminRoute, props);
+export default (props) => withNavigation(PrivateRoute, props);

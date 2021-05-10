@@ -32,7 +32,7 @@ export const UserMenu = ({ close }) => {
   return (
     <div className={styles.container}>
       <div>
-        <p>Welcome {auth.user.role}!</p>
+        <p>Welcome {auth.user.name || auth.user.role}!</p>
         <p>{auth.user.email}</p>
       </div>
       <div>

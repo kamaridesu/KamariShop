@@ -3,6 +3,9 @@ import { FormMsg } from "../../Errors/FormMsg";
 import styles from "./ProfileForm.Module.scss";
 import { Input, Select } from "antd";
 import { useAuth } from "../../Context/AuthContextProvider";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import confirm from "antd/lib/modal/confirm";
+import { useHistory } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -29,9 +32,9 @@ export const ProfileForm = () => {
   const [districtError, setDistrictError] = useState("");
 
   const { setAuth, auth } = useAuth();
+  const history = useHistory();
 
   useEffect(() => {
-    console.log(auth);
     if (auth.user != null) {
       setName(auth.user.name);
       setSurnames(auth.user.surnames);
@@ -197,6 +200,36 @@ export const ProfileForm = () => {
     }
   };
 
+  const showDeleteConfirm = () => {
+    confirm({
+      title: "Are you sure you wana delete your account?",
+      icon: <ExclamationCircleOutlined />,
+      content: "Some descriptions",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        fetch(`/api/users/delete`, {
+          method: "GET",
+          credentials: "include",
+        }).then((res) => {
+          if (res.status === 200) {
+            fetch(`/api/users/logout`, {
+              method: "GET",
+              credentials: "include",
+            });
+            setAuth({
+              user: null,
+              isLoggedIn: false,
+              loading: true,
+            });
+            history.push("/");
+          }
+        });
+      },
+    });
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.form}>
@@ -335,7 +368,7 @@ export const ProfileForm = () => {
         </div>
         <div className={styles.bottons}>
           <button onClick={() => updateProfile()}>Update Profile</button>
-          <button>Delete Profile</button>
+          <button onClick={() => showDeleteConfirm()}>Delete Profile</button>
         </div>
       </div>
     </div>

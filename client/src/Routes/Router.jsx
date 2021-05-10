@@ -4,7 +4,7 @@ import { Home } from "../Components/Home/Home";
 import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
 import { Products } from "../Components/Admin/Products";
 import PublicRoute from "./PublicRoute";
-import AdminRoute from "./AdminRoute";
+import PrivateRoute from "./PrivateRoute";
 import { ErrorHandler } from "../Errors/ErrorHandler";
 import { ProductForm } from "../Components/Admin/ProductForm";
 import { ProductsScreen } from "../Components/Main/ProductsScreen";
@@ -17,23 +17,28 @@ export const Router = () => {
     <ErrorHandler>
       <Switch>
         <PublicRoute exact path="/" component={Home} />
-        <PublicRoute exact path="/profile" component={ProfileForm} />
         <PublicRoute exact path="/hats/:gender" component={ProductsScreen} />
         <PublicRoute exact path="/hats/:gender" component={ProductsScreen} />
         <PublicRoute exact path="/hats/:gender/:id" component={ProductScreen} />
-        <AdminRoute
+        <PrivateRoute
+          exact
+          path="/profile"
+          component={ProfileForm}
+          roles={["admin", "user"]}
+        />
+        <PrivateRoute
           exact
           path="/products"
           component={Products}
           roles={["admin"]}
         />
-        <AdminRoute
+        <PrivateRoute
           exact
           path="/products/productform"
           component={ProductForm}
           roles={["admin"]}
         />
-        <AdminRoute
+        <PrivateRoute
           exact
           path="/products/editproduct/:id"
           component={ProductForm}
