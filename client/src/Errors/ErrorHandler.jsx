@@ -1,6 +1,7 @@
 import { useLocation } from "react-router";
 import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
 
+//este componente se encarga de cargarnos el fallo adecuado segun el fetch
 export const ErrorHandler = ({ children }) => {
   const location = useLocation();
 

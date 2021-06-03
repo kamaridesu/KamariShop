@@ -1,3 +1,4 @@
+//diseño para contenedor cuando no hay productos
 .empty {
   display: flex;
   flex-direction: column;
@@ -41,6 +42,7 @@
   }
 }
 
+//diseño del contenedor cuando hay productos
 .full {
   display: grid;
   padding: 3rem 1rem;
@@ -78,6 +80,7 @@
     }
   }
 
+  //diseñor del contenedor de las targetas
   .products {
     display: grid;
     grid-gap: 20px;
@@ -139,6 +142,7 @@
   }
 }
 
+//diseño del modal de confirmacion
 .confirmation {
   display: flex;
   text-align: -webkit-center;
@@ -181,6 +185,7 @@
   }
 }
 
+//cambio el layout con media queries
 @media (min-width: 768px) {
   .confirmation {
     display: grid;

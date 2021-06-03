@@ -3,6 +3,7 @@ import { useAuth } from "../Context/AuthContextProvider";
 import { withNavigation } from "../Components/Navigation/withNavigation";
 import { useHistory } from "react-router";
 
+//este componente verifica si el usuario esta logueado y el role del usuario antes de permitir el acceso
 export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
   const { auth } = useAuth();
   const history = useHistory();

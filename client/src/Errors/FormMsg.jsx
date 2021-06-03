@@ -3,6 +3,7 @@ import { BsExclamationCircleFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import styles from "./FormMsg.Module.scss";
 
+//este componente lo usamos para mostrar mensajes de fallo y existo segun la respuesta del fetch
 export const FormMsg = ({ msg, clear }) => {
   return (
     <div

@@ -1,15 +1,19 @@
 $breakpoint-tablet: 768px;
 
+//doy diseño al contenedor principal
 .container {
   padding: 2rem 2rem;
   display: grid;
   grid-gap: 20px;
 
+  //doy diseñor al contenedor de las imagenes
   & > :nth-child(1) {
     grid-gap: 1rem;
     display: grid;
     width: 300px;
     margin: auto;
+
+    //diseño para los contenedor de los 4 imagenes
     & > :nth-child(1) {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -40,6 +44,7 @@ $breakpoint-tablet: 768px;
       }
     }
 
+    //diseño para el contenedor de la imagen
     & > :nth-child(2) {
       height: 250px;
       border-radius: 10px;
@@ -80,6 +85,7 @@ $breakpoint-tablet: 768px;
     }
   }
 
+  //diseño para el contenedor de los inputs y colores
   & > :nth-child(2) {
     display: grid;
     grid-gap: 30px;
@@ -136,7 +142,6 @@ $breakpoint-tablet: 768px;
       flex-wrap: wrap;
       justify-content: center;
       & > button {
-        //background-color: red;
         border: 1px solid #e6e6e6;
         background-color: white;
         outline: none;
@@ -165,6 +170,7 @@ $breakpoint-tablet: 768px;
   }
 }
 
+//diseñor si el genero esta activo
 .genderActive {
   border-bottom: 3px solid black;
 }
@@ -178,15 +184,16 @@ $breakpoint-tablet: 768px;
   }
 }
 
+//diseño para el mensaje de exito o fallo
 .msg {
   width: 95%;
   margin: auto;
   margin-top: 2rem;
 }
 
+//cambio el layout con media queries
 @media (min-width: $breakpoint-tablet) {
   .container {
-    //background-color: #f44336;
     grid-template-columns: repeat(3, 1fr);
     margin: 0;
     max-width: none;
@@ -199,7 +206,6 @@ $breakpoint-tablet: 768px;
       }
     }
     & > :nth-child(2) {
-      //background-color: red;
       grid-column-end: 4;
       grid-column-start: 2;
     }

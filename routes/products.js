@@ -5,12 +5,11 @@ const { sql } = require("../configDB");
 const util = require("util");
 const { mkdir, rmdir, readdir, unlink } = require("../utility/utils");
 
+//ruta para obtener todos los productos que no esten en estado eliminado
 router.get("/all", async (req, res) => {
   try {
-    // if (req.user === null || req.user.role !== "admin") {
-    //   return res.status(401).json();
-    // }
-    const response = await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image) 
+    const response =
+      await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image) 
         as images 
         from product 
         inner join images 
@@ -29,19 +28,17 @@ router.get("/all", async (req, res) => {
   }
 });
 
+//ruta para obtener un producto segun id
 router.get("/product/:id", async (req, res) => {
   try {
-    // if (req.user === null || req.user.role !== "admin") {
-    //   return res.status(401).json({});
-    // }
-
     const product = {
       id: req.params.id,
     };
 
     let response;
     try {
-      response = await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image)
+      response =
+        await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image)
         as images
         from product
         inner join images
@@ -63,10 +60,13 @@ router.get("/product/:id", async (req, res) => {
   }
 });
 
+//ruta para crear un producto desde el panel de admin
 router.post("/create", auth, async (req, res) => {
   try {
+    // se comprueba si los campos son validos
     if (!isProductValid(req, res)) return;
 
+    //si son validos ejecutamos la transaction
     const id = await createProductTransaction(req);
 
     return res.json({ msg: "Product created succesfully", id });
@@ -76,10 +76,13 @@ router.post("/create", auth, async (req, res) => {
   }
 });
 
+//ruta para actualizar el producto
 router.post("/update", auth, async (req, res) => {
   try {
+    // se comprueba si los campos son validos
     if (!isProductValid(req, res)) return;
 
+    //si son validos ejecutamos la transaction
     await updateProductTransaction(req);
 
     return res.status(200).json({ msg: "Product updated succesfully" });
@@ -89,8 +92,10 @@ router.post("/update", auth, async (req, res) => {
   }
 });
 
+//ruta para eliminar un producto segun el id
 router.get("/delete/:id", auth, async (req, res) => {
   try {
+    //validamos que el usuario es un admin
     if (req.user === null || req.user.role !== "admin") {
       return res.status(401).json({});
     }
@@ -100,6 +105,7 @@ router.get("/delete/:id", auth, async (req, res) => {
       isdeleted: true,
     };
 
+    //ejecutamos la transaction
     const response = await deleteProductTransaction(product, res);
 
     return res
@@ -111,13 +117,17 @@ router.get("/delete/:id", auth, async (req, res) => {
   }
 });
 
+//ruta para obtener la lista de deseos segun el usuario
 router.get("/wishlisted", auth, async (req, res) => {
   try {
+    //verificamos que hay un usuario logueado
     if (req.user === null) {
       return res.status(401).json({});
     }
 
-    const response = await sql`SELECT * FROM wishlist join product on product.id = productid WHERE userid = ${req.user.id}`;
+    //obtenemos los productos en la lista
+    const response =
+      await sql`SELECT * FROM wishlist join product on product.id = productid WHERE userid = ${req.user.id}`;
 
     if (!response.count) {
       return res.json({ response: [] });
@@ -130,12 +140,15 @@ router.get("/wishlisted", auth, async (req, res) => {
   }
 });
 
+//ruta para obtener la cesta segun el usuario
 router.get("/basket", auth, async (req, res) => {
   try {
+    //verificamos que hay un usuario logueado
     if (req.user === null) {
       return res.status(401).json({});
     }
 
+    //obtenemos los productos en la cesta
     const response = await sql`
     SELECT productid, basket.quantity FROM basket 
     join product on product.id = productid
@@ -152,8 +165,10 @@ router.get("/basket", auth, async (req, res) => {
   }
 });
 
+//ruta para realizar operaciones crud de la cesta
 router.post("/basket/:operation/", auth, async (req, res) => {
   try {
+    //verificamos que hay un usuario logueado
     if (req.user === null) {
       return res.status(401).json({});
     }
@@ -164,6 +179,7 @@ router.post("/basket/:operation/", auth, async (req, res) => {
       quantity: req.body.quantity,
     };
 
+    // agregamos en la cesta en caso de que exista producto hacemos un update a la cantidad
     if (req.params.operation === "add") {
       await sql`INSERT INTO basket ${sql(
         row,
@@ -176,11 +192,13 @@ router.post("/basket/:operation/", auth, async (req, res) => {
 
       return res.json({});
     } else if (req.params.operation === "remove") {
+      //si la cantidad es distinta a cero hacemos un update al producto
       if (row.quantity !== 0) {
         await sql`UPDATE basket SET ${sql(row, "quantity")} WHERE userid = ${
           row.userid
         } and productid = ${row.productid}`;
       } else {
+        // si es 0 eliminamos el producto de la cesta
         await sql`DELETE FROM basket WHERE userid = ${row.userid} and productid = ${row.productid}`;
       }
       return res.json({});
@@ -193,8 +211,10 @@ router.post("/basket/:operation/", auth, async (req, res) => {
   }
 });
 
+//ruta para realizar operaciones crud de la lista de deseos
 router.post("/wishlist/:id/:operation", auth, async (req, res) => {
   try {
+    //verificamos que hay un usuario logueado
     if (req.user === null) {
       return res.status(401).json({});
     }
@@ -207,10 +227,10 @@ router.post("/wishlist/:id/:operation", auth, async (req, res) => {
     const response = await sql`SELECT * FROM wishlist`;
 
     if (req.params.operation === "add") {
-      //TODO ADD TO TABLE
+      //agregamos a la tabla el producto
       await sql`INSERT INTO wishlist ${sql(row, "userid", "productid")}`;
     } else {
-      //TODO REMOVE FROM TABLE
+      //eliminamos el producto de la tabla
       await sql`DELETE FROM wishlist WHERE userid = ${row.userid} AND productid = ${row.productid}`;
     }
 
@@ -221,13 +241,15 @@ router.post("/wishlist/:id/:operation", auth, async (req, res) => {
   }
 });
 
+//function de validar producto en el formulario
 const isProductValid = (req, res) => {
+  //validamos que el usuario es un admin
   if (req.user === null || req.user.role !== "admin") {
     res.status(401).json();
-
     return false;
   }
 
+  //verificamos que haya foto(s) subida(s)
   if (req.files === null) {
     res.status(400).send({ msg: "Please upload some images" });
 
@@ -238,15 +260,16 @@ const isProductValid = (req, res) => {
 
   let { files } = req.files;
 
+  //verificamos los campos que no esten vacios
   if (!name || !price || !description || !stock || !color || !gender) {
     res.status(400).send({ msg: "Please fill and select all the fields" });
-
     return false;
   }
 
   return true;
 };
 
+//funcion de crear producto mediante transaccion
 const createProductTransaction = async (req) => {
   const { name, price, description, stock, color, gender } = req.body;
 
@@ -256,7 +279,9 @@ const createProductTransaction = async (req) => {
     files = [files];
   }
 
+  //iniciamos la transaccion
   return await sql.begin(async (sql) => {
+    //insertamos producto
     const create = await sql`INSERT INTO product ${sql(
       req.body,
       "name",
@@ -275,8 +300,10 @@ const createProductTransaction = async (req) => {
       url = `./client/public/images/${create[0].id}`;
     }
 
+    //creamos directorio
     await mkdir(url);
 
+    //insertamos la imagen en la carpeta y en la tabla de imagenes
     for (let i = 0; i < files.length; i++) {
       files[i].mv = util.promisify(files[i].mv);
       await files[i].mv(`${url}/${files[i].md5}`);
@@ -288,6 +315,7 @@ const createProductTransaction = async (req) => {
   });
 };
 
+//funcion de actualizar producto mediante transaccion
 const updateProductTransaction = async (req) => {
   const { id, name, price, description, stock, color, gender } = req.body;
 
@@ -297,7 +325,9 @@ const updateProductTransaction = async (req) => {
     files = [files];
   }
 
+  //iniciamos la transaccion
   await sql.begin(async (sql) => {
+    //actualizamos el producto
     const update = await sql`UPDATE product set ${sql(
       req.body,
       "name",
@@ -308,6 +338,7 @@ const updateProductTransaction = async (req) => {
       "description"
     )} WHERE id = ${req.body.id} RETURNING *`;
 
+    //eliminamos las imagenes del producto
     await sql`DELETE FROM images WHERE productid = ${update[0].id}`;
 
     let url;
@@ -318,12 +349,15 @@ const updateProductTransaction = async (req) => {
       url = `./client/public/images/${update[0].id}`;
     }
 
+    //accedemos a los archivos del directorio
     const currentFiles = await readdir(url);
 
+    //eliminamos las imagenes
     for (const file of currentFiles) {
       await unlink(`${url}/${file}`);
     }
 
+    //insertamos la imagen en la carpeta y en la tabla de imagenes
     for (let i = 0; i < files.length; i++) {
       files[i].mv = util.promisify(files[i].mv);
       files[i].mv(`${url}/${files[i].md5}`);
@@ -334,13 +368,16 @@ const updateProductTransaction = async (req) => {
   });
 };
 
+//funcion de eliminar producto mediante transaccion
 const deleteProductTransaction = async (product, res) => {
   return await sql.begin(async (sql) => {
+    //eliminamos el producto
     await sql`UPDATE product set ${sql(product, "isdeleted")} WHERE id = ${
       product.id
     }`;
 
-    const response = await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image) 
+    const response =
+      await sql`select id, name, price, stock, gender, color, description, isdeleted, array_agg(images.image) 
         as images 
         from product 
         inner join images 

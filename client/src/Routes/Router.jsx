@@ -12,6 +12,7 @@ import { ProductScreen } from "../Components/Main/ProductScreen";
 import { ResetForm } from "../Components/Main/ResetForm";
 import { ProfileForm } from "../Components/Main/ProfileForm";
 
+//este componente es nuestro router para acceder a los distintos urls de la pagina
 export const Router = () => {
   return (
     <ErrorHandler>

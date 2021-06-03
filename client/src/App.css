@@ -1,3 +1,4 @@
+/* quitamos los margenes y padding por defecto de los navegadores */
 * {
   margin: 0;
   padding: 0;
@@ -5,10 +6,12 @@
   font-family: "Montserrat", sans-serif;
 }
 
+/* damos tamaño a la barra lateral */
 body::-webkit-scrollbar {
   width: 0.15rem;
 }
 
+/* damos color a la barra lateral */
 body::-webkit-scrollbar-track {
   background: #ffffff;
 }
@@ -17,10 +20,10 @@ body::-webkit-scrollbar-thumb {
   background: #000000;
 }
 
+/* creamos el layout de la pagina */
 .App {
   width: 100%;
   display: grid;
   grid-template-rows: 8vh auto auto;
-  /* grid-template-rows: 8vh 92vh 1fr; */
   min-height: 100vh;
 }

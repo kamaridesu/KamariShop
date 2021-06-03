@@ -1,6 +1,9 @@
+//diseño para el contenedor general de la cesta
 .container {
   background-color: white;
   width: 100%;
+
+  //diseño para cuando la cesta este vacia
   .empty {
     height: 100%;
     display: flex;
@@ -20,10 +23,12 @@
     }
   }
 
+  //diseño para cuando la cesta este llena
   .full {
     height: 100%;
     display: grid;
     grid-template-rows: auto 1fr auto;
+    //diseño para la cantidad de productos en la cesta
     .quantity {
       font-weight: 600;
       font-size: 20px;
@@ -35,6 +40,7 @@
       }
     }
 
+    //diseño para el contenedor de los productos en la cesta
     .mid {
       overflow: auto;
       padding: 0 1rem;
@@ -55,6 +61,7 @@
         display: grid;
         grid-gap: 1.5rem;
 
+        //diseño para la targeta del producto
         .product {
           display: flex;
           height: fit-content;
@@ -68,6 +75,7 @@
             }
           }
 
+          //diseñor para la informacion del producto
           .productinfo {
             grid-template-columns: 1fr;
             width: 100%;
@@ -87,6 +95,7 @@
               flex-direction: column;
               justify-content: space-between;
 
+              //diseño para contenedor del color y cantidad
               .colorquantity {
                 background-color: white;
                 display: flex;
@@ -104,6 +113,7 @@
                   }
                 }
 
+                //diseño para contenedor de cantidad del plus y menos
                 .quantitywrapper {
                   grid-auto-flow: column;
                   background-color: white;
@@ -129,6 +139,7 @@
                 }
               }
 
+              //diseño para la contenedor precio y iconos
               .bottombottom {
                 display: flex;
                 justify-content: space-between;
@@ -178,6 +189,7 @@
       }
     }
 
+    //diseño para el precio y boton
     .bottom {
       display: grid;
       grid-gap: 1rem;
@@ -208,6 +220,7 @@
   }
 }
 
+//cambio el layout con media queries
 @media (min-width: 768px) {
   .container {
     width: 24rem !important;

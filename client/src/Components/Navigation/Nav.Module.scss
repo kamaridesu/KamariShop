@@ -1,3 +1,4 @@
+//diseño para el layout general de la navegacion
 .nav {
   position: sticky;
   top: 0;
@@ -9,6 +10,7 @@
   padding: 0 10px;
   align-items: center;
 
+  //diseño para el logo
   .leftSection {
     a {
       display: block;
@@ -19,6 +21,7 @@
     }
   }
 
+  //diseño para la seccion de genero
   .middleSection {
     display: grid;
     grid-auto-flow: column;
@@ -43,6 +46,7 @@
     }
   }
 
+  //diseño para la seccion de iconos
   .rightSection {
     display: grid;
     grid-auto-flow: column;
@@ -59,6 +63,7 @@
   }
 }
 
+//diseño cuando la seccion esta activa
 .active {
   border-radius: 4px !important;
   border: 0px solid black !important;
@@ -66,6 +71,7 @@
   background-color: black !important;
 }
 
+//cambio el layout con media queries
 @media (min-width: 768px) {
   .nav {
     padding: 0 40px;

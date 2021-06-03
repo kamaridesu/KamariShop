@@ -1,3 +1,4 @@
+//diseño para contenedor principal del formulario de registro y login
 .form {
   padding: 2rem;
   display: grid;
@@ -5,6 +6,7 @@
   height: -webkit-fill-available;
   width: -webkit-fill-available;
 
+  //diseño de letra del titulo
   .title {
     font-size: 13px;
     font-weight: 600;
@@ -12,6 +14,7 @@
     letter-spacing: 2px;
   }
 
+  //diseño de la seccion intermedia de los inputs
   .middleSection {
     display: grid;
     grid-gap: 3rem;
@@ -50,6 +53,7 @@
     }
   }
 
+  //diseño texto forgot passoword
   .forgot {
     text-align: end;
     text-decoration: underline;
@@ -77,6 +81,7 @@
   }
 }
 
+//cambio el layout con media queries
 @media (min-width: 769px) {
   .form {
     width: 24em;

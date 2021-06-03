@@ -3,6 +3,7 @@ import useQuery from "../Hooks/useQuery";
 
 export const AuthStateContext = createContext();
 
+//este componente se encarga saber el estado de si un usuario esta logueado o no
 export const AuthContextProvider = ({ children }) => {
   const { data, loading } = useQuery({
     url: "/api/users/userstate",

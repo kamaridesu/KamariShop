@@ -1,3 +1,4 @@
+//diseño del contenedor principal del footer
 .footer {
   background-color: #e4e4e4;
   display: grid;
@@ -7,6 +8,7 @@
   grid-gap: 40px;
   height: fit-content;
 
+  //diseño para los iconos
   > .list {
     display: grid;
     grid-auto-flow: column;
@@ -24,6 +26,7 @@
     }
   }
 
+  //diseño para el texto descriptivo
   > .middle {
     max-width: 520px;
     margin: auto;
@@ -33,6 +36,7 @@
     }
   }
 
+  //diseño para el nombre e icono
   > .bottom {
     grid-gap: 15px;
     display: flex;

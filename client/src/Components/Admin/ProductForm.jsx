@@ -7,6 +7,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useHistory, useParams } from "react-router";
 import useQuery from "../../Hooks/useQuery";
 
+//componente para
 export const ProductForm = () => {
   const { id } = useParams();
   const [name, setName] = useState("");

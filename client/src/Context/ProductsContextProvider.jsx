@@ -11,6 +11,7 @@ import { notification } from "antd";
 
 export const ProductsContext = createContext();
 
+//este componente genera el contexto para obtener los productos
 export const ProductsContextProvider = ({ children }) => {
   const [basket, setBasket] = useState([]);
   const [wishlist, setWishlist] = useState([]);
@@ -18,6 +19,7 @@ export const ProductsContextProvider = ({ children }) => {
   const { auth } = useAuth();
   const updateWishlist = useQuery({});
 
+  //funcion para actualizar el estado del product en la wishlist
   const toggleFavProduct = useCallback(
     (id) => {
       let url;
@@ -39,6 +41,7 @@ export const ProductsContextProvider = ({ children }) => {
     [wishlist]
   );
 
+  //funcion para agregar producto a la cesta
   const addToBasket = useCallback(async (id) => {
     const item = basket.find((el) => el.productid === id);
     const product = products.find((el) => el.id === id);
@@ -78,6 +81,7 @@ export const ProductsContextProvider = ({ children }) => {
       }));
   });
 
+  //funcion para eliminar producto de la cesta reduciendo la cantidad
   const removeFromBasket = useCallback(async (id) => {
     const item = basket.find((el) => el.productid === id);
 
@@ -115,6 +119,7 @@ export const ProductsContextProvider = ({ children }) => {
       }));
   });
 
+  //funcion para eliminar el producto por completo de la cesta
   const deleteBasketProduct = useCallback(async (id) => {
     const item = basket.find((el) => el.productid === id);
     const product = products.find((el) => el.id === id);
@@ -140,6 +145,7 @@ export const ProductsContextProvider = ({ children }) => {
       }));
   });
 
+  //muestra la notificacion de exito
   const success = (msg) => {
     return notification.success({
       message: "basket",
@@ -148,6 +154,7 @@ export const ProductsContextProvider = ({ children }) => {
     });
   };
 
+  //muestra la notificacion de fallo
   const failed = () => {
     return notification.error({
       message: "basket",
@@ -191,7 +198,7 @@ export const useProducts = () => {
   return value;
 };
 
-//get the products data in first render
+//obtenemos los productos
 const useProductQuery = (setProducts, products, wishlist, setWishlist) => {
   const productsQuery = useQuery({
     url: "/api/products/all",
@@ -215,9 +222,9 @@ const useProductQuery = (setProducts, products, wishlist, setWishlist) => {
   }, [products]);
 };
 
+//obtenemos el estado de la wishlist
 const useWishlistQuery = (auth, setWishlist) => {
   const wishlistQuery = useQuery({});
-  //every time auth changes we get the appropiate wishlisted products
   useEffect(() => {
     if (auth.isLoggedIn) {
       wishlistQuery.setApiOptions({
@@ -246,6 +253,7 @@ const useWishlistQuery = (auth, setWishlist) => {
   }, [wishlistQuery.loading, auth.isLoggedIn, wishlistQuery.data]);
 };
 
+//obtenemos el estado de la cesta
 const useBasketQuery = (auth, setBasket) => {
   const basketQuery = useQuery({});
 

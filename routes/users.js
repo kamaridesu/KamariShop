@@ -6,23 +6,27 @@ const jwt = require("jsonwebtoken");
 const { sql } = require("../configDB");
 const nodemailer = require("nodemailer");
 
+//ruta para obtener el estado global del usuario
 router.get("/userstate", auth, (req, res) => {
   if (req.user === null) return res.json({});
 
   return res.json({ ...req.user });
 });
 
+//ruta para loguear el usuario
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const body = req.body;
 
+    //comprobamos que el email exista
     let response = await sql`select * from users WHERE email = ${body.email}`;
 
     if (!response.count) {
       return res.status(400).json({ msg: "Wrong username or password." });
     }
 
+    //desencriptamos y comprobamos la contraseña introducida con la de base de datos
     const decryptedPassword = await bcrypt.compare(
       password,
       response[0].password
@@ -32,6 +36,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "Wrong username or password." });
     }
 
+    //generamos un token
     const token = jwt.sign(
       {
         user: {
@@ -51,6 +56,7 @@ router.post("/login", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET
     );
 
+    //devolvemos el token en forma de cookie
     return res
       .cookie("token", token, {
         httpOnly: true,
@@ -76,11 +82,13 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//ruta para registrar el usuario
 router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
     const body = req.body;
 
+    //comprobamos que el email no este usado por otro usuario
     let response = await sql`select * from users WHERE email = ${body.email}`;
 
     if (response.count) {
@@ -89,10 +97,12 @@ router.post("/register", async (req, res) => {
         .json({ msg: "An account already exists with this email" });
     }
 
+    //encriptamos la contraseña del usuario
     const passwordHash = await bcrypt.hash(password, 10);
 
     body.password = passwordHash;
 
+    //insertamos el nuevo usuario
     await sql`insert into users ${sql(body, "email", "password")}`;
 
     return res
@@ -104,8 +114,10 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//ruta para desloguear el usuario de la pagina
 router.get("/logout", (req, res) => {
   try {
+    //eliminamos la cookie del navegador
     return res
       .cookie("token", "", {
         httpOnly: true,
@@ -118,10 +130,14 @@ router.get("/logout", (req, res) => {
   }
 });
 
+//ruta para comprobar y enviar correo de recuperacion
 router.post("/forgot", async (req, res) => {
   try {
-    const query = await sql`SELECT * from users where email = ${req.body.email}`;
+    //comprobamos que el email exista
+    const query =
+      await sql`SELECT * from users where email = ${req.body.email}`;
     if (query.count === 1) {
+      //generamos un secret
       const secret = process.env.ACCESS_TOKEN_SECRET + query.password;
 
       const payload = {
@@ -129,9 +145,20 @@ router.post("/forgot", async (req, res) => {
         id: query[0].id,
       };
 
-      const token = jwt.sign(payload, secret, { expiresIn: "1m" });
-      const link = `http://${req.headers["x-forwarded-host"]}/resetpassword/${query[0].id}/${token}`;
+      let url;
 
+      if (process.env.NODE_ENV === "PROD") {
+        url = `15.237.94.17:5000`;
+      } else {
+        url = `localhost:3000`;
+      }
+
+      //creamos un token para verificar la validez del enlace
+      const token = jwt.sign(payload, secret, { expiresIn: "1m" });
+      //declaramos la ruta de la pagina web
+      const link = `http://${url}/resetpassword/${query[0].id}/${token}`;
+
+      //creamos el transporter para enviar emails a los usuarios
       let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
@@ -142,6 +169,7 @@ router.post("/forgot", async (req, res) => {
         },
       });
 
+      //creamos las opciones del correo
       let mailOptions = {
         from: `"FORGOT PASSWORD 👻" <${process.env.EMAIL}>`,
         to: req.body.email,
@@ -150,6 +178,7 @@ router.post("/forgot", async (req, res) => {
         <a href=${link}>click</a>`,
       };
 
+      //nviamos el correo
       let info = await transporter.sendMail(mailOptions);
     }
   } catch (error) {
@@ -158,12 +187,14 @@ router.post("/forgot", async (req, res) => {
   }
 });
 
+//ruta para actualizar contraseña y validar el token
 router.post("/reset", async (req, res) => {
   try {
     const { password, id, token } = req.body;
 
     let response;
     try {
+      //obtenemos el usuario segun id
       response = await sql`select * from users where id = ${id}`;
 
       if (!response.count) return res.status(401).json({});
@@ -171,20 +202,24 @@ router.post("/reset", async (req, res) => {
       return res.status(401).json({});
     }
 
+    //creamos el secret empleado en la generacion del token
     const secret = process.env.ACCESS_TOKEN_SECRET + response.password;
 
     try {
+      //verificamos que el token no es valido y no haya caducado
       jwt.verify(token, secret);
     } catch (error) {
       return res.status(400).json({ msg: "Your reset link has expired" });
     }
 
+    //encriptamos la nueva constraseña
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = {
       password: passwordHash,
     };
 
+    //actualizamos la contraseña
     await sql`UPDATE users SET ${sql(user)} where id = ${id}`;
 
     return res.json({ msg: "Your password has been updated succesfully" });
@@ -194,19 +229,24 @@ router.post("/reset", async (req, res) => {
   }
 });
 
+//ruta para actualizar el perfil
 router.post("/updateprofile", auth, async (req, res) => {
   try {
+    //comprobamos que el usuario este logueado
     if (req.user === null) return res.json({});
 
     if (!req.body.email) delete req.body.email;
 
     if (!req.body.password) delete req.body.password;
 
+    //empezamos la transaccion
     await sql.begin(async (sql) => {
+      //actualizamos el usuario con los datos
       const update = await sql`UPDATE users set ${sql(req.body)} WHERE id = ${
         req.user.id
       } RETURNING *`;
 
+      //regeneramos el estado de la aplicacion con los nuevos datos
       const token = jwt.sign(
         {
           user: {
@@ -226,6 +266,7 @@ router.post("/updateprofile", auth, async (req, res) => {
         process.env.ACCESS_TOKEN_SECRET
       );
 
+      //enviamos la cookie
       return res
         .cookie("token", token, {
           httpOnly: true,
@@ -252,10 +293,13 @@ router.post("/updateprofile", auth, async (req, res) => {
   }
 });
 
+//ruta para eliminar el usuario
 router.get("/delete", auth, async (req, res) => {
   try {
+    //comprobamos que haya un usuario logueado
     if (req.user === null) return res.json({});
 
+    //eliminamos el usuario
     await sql`delete from users where id = ${req.user.id}`;
 
     return res.json({});

@@ -16,7 +16,7 @@ export const Basket = () => {
       total += item.quantity * product.price;
     });
 
-    return total;
+    return total.toFixed(2);
   };
 
   return (
@@ -29,7 +29,7 @@ export const Basket = () => {
       ) : (
         <div className={styles.full}>
           <p className={styles.quantity}>
-            Basket <span>(10) </span>
+            Basket <span>({basket.length}) </span>
           </p>
           <div className={styles.mid}>
             <div className={styles.productswrapper}>
